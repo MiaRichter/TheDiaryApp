@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Toolkit.Hosting;
+using TheDiaryApp.Helpers;
+using TheDiaryApp.Repositories;
 
 namespace TheDiaryApp;
 
@@ -38,6 +40,9 @@ public static class MauiProgram
 		builder.Services.AddSingleton<MainPageModel>();
 		builder.Services.AddSingleton<ProjectListPageModel>();
 		builder.Services.AddSingleton<ManageMetaPageModel>();
+		builder.Services.AddSingleton<ReportRepo>();
+		builder.Services.AddSingleton<ExcelParser>();
+		builder.Services.AddSingleton<ReplacementParser>();
 
 		builder.Services.AddTransientWithShellRoute<ProjectDetailPage, ProjectDetailPageModel>("project");
 		builder.Services.AddTransientWithShellRoute<TaskDetailPage, TaskDetailPageModel>("task");
