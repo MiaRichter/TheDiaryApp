@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using TheDiaryApp.Models;
+using System.IO.MemoryMappedFiles;
 
 namespace TheDiaryApp.Helpers
 {
@@ -9,8 +10,22 @@ namespace TheDiaryApp.Helpers
         {
             var result = new StructuredSchedule();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("Файл не найден", filePath);
+            }
 
-            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            // Чтение файла в MemoryStream
+            byte[] fileBytes;
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                fileBytes = new byte[fileStream.Length];
+                fileStream.Read(fileBytes, 0, (int)fileStream.Length);
+            }
+
+            // Использование MemoryStream
+            using (var memoryStream = new MemoryStream(fileBytes))
+            using (var package = new ExcelPackage(memoryStream))
             {
                 var worksheet = package.Workbook.Worksheets[0];
                 int totalRows = worksheet.Dimension.Rows;

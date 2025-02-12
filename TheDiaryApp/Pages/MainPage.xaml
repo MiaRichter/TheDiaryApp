@@ -1,85 +1,104 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:pageModels="clr-namespace:TheDiaryApp.PageModels"             
              xmlns:models="clr-namespace:TheDiaryApp.Models"
-             xmlns:controls="clr-namespace:TheDiaryApp.Pages.Controls"
-             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="TheDiaryApp.Pages.MainPage"
-             x:DataType="pageModels:MainPageModel"
-             Title="{Binding Today}">
+             x:Class="TheDiaryApp.Pages.SchedulePage"
+             Title="Расписание">
 
-    <ContentPage.Behaviors>
-        <toolkit:EventToCommandBehavior
-                EventName="NavigatedTo"
-                Command="{Binding NavigatedToCommand}" />
-        <toolkit:EventToCommandBehavior
-                EventName="NavigatedFrom"
-                Command="{Binding NavigatedFromCommand}" />
-        <toolkit:EventToCommandBehavior
-                EventName="Appearing"                
-                Command="{Binding AppearingCommand}" />
-    </ContentPage.Behaviors>
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="10">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+            <!-- Заголовок -->
+            <Label Text="Расписание"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,10"/>
 
-    <Grid>
-        <pullToRefresh:SfPullToRefresh
-            IsRefreshing="{Binding IsRefreshing}"
-            RefreshCommand="{Binding RefreshCommand}">
-            <pullToRefresh:SfPullToRefresh.PullableContent>
-                <ScrollView>
-                    <VerticalStackLayout Spacing="{StaticResource LayoutSpacing}" Padding="{StaticResource LayoutPadding}">
-                        <controls:CategoryChart />
-                        <Label Text="Projects" Style="{StaticResource Title2}"/>
-                        <ScrollView Orientation="Horizontal" Margin="-30,0">
-                            <HorizontalStackLayout 
-                                Spacing="15" Padding="30,0"
-                                BindableLayout.ItemsSource="{Binding Projects}">
+            <!-- Отображение расписания -->
+            <StackLayout BindableLayout.ItemsSource="{Binding Schedule.WeekData}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout Spacing="5">
+
+                            <!-- Неделя -->
+                            <Label Text="{Binding Key}" 
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="Black"
+                                   Margin="0,10,0,5"/>
+
+                            <!-- Дни недели -->
+                            <StackLayout BindableLayout.ItemsSource="{Binding Value}">
                                 <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="models:Project">
-                                        <controls:ProjectCardView WidthRequest="200">
-                                            <controls:ProjectCardView.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding NavigateToProjectCommand, Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}}, x:DataType=pageModels:MainPageModel}" CommandParameter="{Binding .}"/>
-                                            </controls:ProjectCardView.GestureRecognizers>
-                                        </controls:ProjectCardView>
+                                    <DataTemplate>
+                                        <VerticalStackLayout Spacing="5">
+
+                                            <!-- День недели -->
+                                            <Label Text="{Binding Key}" 
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="Gray"
+                                                   Margin="10,5,0,0"/>
+
+                                            <!-- Пары -->
+                                            <StackLayout BindableLayout.ItemsSource="{Binding Value}">
+                                                <BindableLayout.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Frame Padding="10"
+                                                               BackgroundColor="#F5F5F5"
+                                                               CornerRadius="5"
+                                                               Margin="10,0,10,5">
+                                                            <Grid ColumnDefinitions="30*,70*"
+                                                                  RowDefinitions="*,*,*">
+
+                                                                <!-- Номер пары -->
+                                                                <Label Text="{Binding LessonNumber}"
+                                                                       FontAttributes="Bold"
+                                                                       FontSize="16"
+                                                                       VerticalOptions="Center"
+                                                                       Grid.Column="0"
+                                                                       Grid.RowSpan="3"/>
+
+                                                                <!-- Предмет -->
+                                                                <Label Text="{Binding Subject}"
+                                                                       FontSize="14"
+                                                                       Grid.Column="1"
+                                                                       Grid.Row="0"/>
+
+                                                                <!-- Преподаватель -->
+                                                                <Label Text="{Binding Teacher}"
+                                                                       FontSize="12"
+                                                                       TextColor="Gray"
+                                                                       Grid.Column="1"
+                                                                       Grid.Row="1"/>
+
+                                                                <!-- Аудитория -->
+                                                                <Label Text="{Binding Room}"
+                                                                       FontSize="12"
+                                                                       TextColor="Gray"
+                                                                       Grid.Column="1"
+                                                                       Grid.Row="2"/>
+                                                            </Grid>
+                                                        </Frame>
+                                                    </DataTemplate>
+                                                </BindableLayout.ItemTemplate>
+                                            </StackLayout>
+                                        </VerticalStackLayout>
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
-                            </HorizontalStackLayout>
-                        </ScrollView>
-                        <Grid HeightRequest="44">
-                            <Label Text="Tasks" Style="{StaticResource Title2}" VerticalOptions="Center"/>
-                            <ImageButton 
-                                Source="{StaticResource IconClean}"
-                                HorizontalOptions="End"
-                                VerticalOptions="Center"
-                                Aspect="Center"
-                                HeightRequest="44"
-                                WidthRequest="44"
-                                IsVisible="{Binding HasCompletedTasks}"
-                                Command="{Binding CleanTasksCommand}"
-                                />
-                        </Grid>
-                        <VerticalStackLayout Spacing="15"
-                            BindableLayout.ItemsSource="{Binding Tasks}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:TaskView TaskCompletedCommand="{Binding TaskCompletedCommand, Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}}, x:DataType=pageModels:MainPageModel}" />
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
+                            </StackLayout>
                         </VerticalStackLayout>
-                    </VerticalStackLayout>
-                </ScrollView>
-            </pullToRefresh:SfPullToRefresh.PullableContent>
-        </pullToRefresh:SfPullToRefresh>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
 
-        <controls:AddButton 
-            IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-            Command="{Binding AddTaskCommand}" />
-    </Grid>
+            <!-- Сообщение при отсутствии данных -->
+            <Label Text="Расписание не найдено"
+                   IsVisible="{Binding IsEmpty}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Margin="20"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

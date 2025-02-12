@@ -1,10 +1,5 @@
 ﻿using TheDiaryApp.Helpers;
 using TheDiaryApp.Models;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace TheDiaryApp.Repositories
 {
@@ -22,12 +17,12 @@ namespace TheDiaryApp.Repositories
         public async Task<StructuredSchedule> ReportAsync(string groupName, int subGroup)
         {
             // Пути к файлам
-            string mainFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Main.xlsx");
-            string replacementsFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "Replacements.xlsx");
-            
+            string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
+            string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
+
             // Скачиваем файлы
             await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
-            await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/10.02.25-12.02.25.xlsx?forcedownload=1", replacementsFilePath);
+            await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/13.02.25-15.02.25.xlsx?forcedownload=1", replacementsFilePath);
 
             // Парсим основной файл
             var mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
@@ -36,7 +31,7 @@ namespace TheDiaryApp.Repositories
 
             // Применяем замены к основному расписанию
             var updatedSchedule = ApplyReplacements(mainSchedule, replacements);
-            
+
             return updatedSchedule;
         }
 
@@ -80,17 +75,17 @@ namespace TheDiaryApp.Repositories
                     if (dayReplacements.Any())
                     {
                         // Очищаем список пар на этот день
-                        
+
 
                         // Добавляем замены
                         foreach (var replacement in dayReplacements.Values)
                         {
                             var lessonreplays = -1;
-                            for(var i = 0; i < daySchedules.Count; i++)
+                            for (var i = 0; i < daySchedules.Count; i++)
                             {
                                 if (daySchedules[i].LessonNumber == replacement.LessonNumber)
                                 {
-                                    lessonreplays=i;
+                                    lessonreplays = i;
                                     continue;
                                 }
                             }
