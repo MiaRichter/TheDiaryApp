@@ -19,10 +19,16 @@ namespace TheDiaryApp.Repositories
             // Пути к файлам
             string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
             string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
-
+            
             // Скачиваем файлы
             await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
-            await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/13.02.25-15.02.25.xlsx?forcedownload=1", replacementsFilePath);
+            if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
+            {
+                int day = DateTime.Now.Day;
+                int month = DateTime.Now.Month;
+                int Year = DateTime.Now.Year;
+                await DownloadFileAsync($"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{Year}-{day + 2}.{month}.{Year}.xlsx?forcedownload=1", replacementsFilePath);
+            }
 
             // Парсим основной файл
             var mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
