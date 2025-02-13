@@ -1,6 +1,4 @@
 ﻿using OfficeOpenXml;
-using TheDiaryApp.Models;
-using System.IO.MemoryMappedFiles;
 
 namespace TheDiaryApp.Helpers
 {

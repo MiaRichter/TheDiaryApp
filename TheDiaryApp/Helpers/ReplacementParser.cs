@@ -1,5 +1,4 @@
 ﻿using OfficeOpenXml;
-using TheDiaryApp.Models;
 
 namespace TheDiaryApp.Helpers
 {

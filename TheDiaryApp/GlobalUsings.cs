@@ -1,6 +1,6 @@
 global using Fonts;
-global using TheDiaryApp.Data;
-global using TheDiaryApp.PageModels;
-global using TheDiaryApp.Pages;
-global using TheDiaryApp.Services;
-global using TheDiaryApp.Utilities;
+global using TheDiaryApp.Repositories;
+global using TheDiaryApp.Models;
+global using TheDiaryApp.Helpers;
+global using TheDiaryApp.ViewModels;
+global using Microsoft.Maui.Networking;
