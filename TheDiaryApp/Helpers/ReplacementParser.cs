@@ -10,11 +10,21 @@ namespace TheDiaryApp.Helpers
             var replacements = new Dictionary<string, Schedule>();
 
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"Файл не найден: {filePath}");
+            {
+                throw new FileNotFoundException("Файл не найден", filePath);
+            }
 
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            // Чтение файла в MemoryStream
+            byte[] fileBytes;
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                fileBytes = new byte[fileStream.Length];
+                fileStream.Read(fileBytes, 0, (int)fileStream.Length);
+            }
 
-            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            // Использование MemoryStream
+            using (var memoryStream = new MemoryStream(fileBytes))
+            using (var package = new ExcelPackage(memoryStream))
             {
                 var worksheet = package.Workbook.Worksheets[0];
                 int firstRow = worksheet.Dimension.Start.Row;
