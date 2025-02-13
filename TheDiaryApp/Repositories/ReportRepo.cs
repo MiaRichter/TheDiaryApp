@@ -1,7 +1,4 @@
-﻿using TheDiaryApp.Helpers;
-using TheDiaryApp.Models;
-
-namespace TheDiaryApp.Repositories
+﻿namespace TheDiaryApp.Repositories
 {
     public class ReportRepo
     {
@@ -16,36 +13,57 @@ namespace TheDiaryApp.Repositories
 
         public async Task<StructuredSchedule> ReportAsync(string groupName, int subGroup)
         {
+            StructuredSchedule mainSchedule;
+            Dictionary<string, Schedule> replacements;
+            StructuredSchedule updatedSchedule;
             // Пути к файлам
             string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
             string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
-            
-            // Скачиваем файлы
-            await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
-            if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
+
+            // Проверка наличия интернета
+            var currentNetworkAccess = Connectivity.NetworkAccess;
+            if (currentNetworkAccess == NetworkAccess.Internet)
             {
-                DateTime now = DateTime.Now;
+                try
+                {
+                    // Скачиваем файлы
+                    await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
+                    if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
+                    {
+                        DateTime now = DateTime.Now;
+                        // Форматируем день, чтобы он был в формате "02"
+                        string day = now.Day.ToString("D2");
+                        // Форматируем месяц, чтобы он был в формате "02"
+                        string month = now.Month.ToString("D2");
+                        // Форматируем год, чтобы он был в формате "25"
+                        int year = now.Year % 100;
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            day = now.AddDays(1).Day.ToString("D2");
+                        }
+                        string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{now.AddDays(2).Day.ToString("D2")}.{month}.{year}.xlsx?forcedownload=1";
+                        await DownloadFileAsync(query, replacementsFilePath);
+                    }
+                }
+                catch (Exception ex)
+                {
 
-                // Форматируем день, чтобы он был в формате "02"
-                string day = now.Day.ToString("D2");
-                
-                // Форматируем месяц, чтобы он был в формате "02"
-                string month = now.Month.ToString("D2");
-
-                // Форматируем год, чтобы он был в формате "25"
-                int year = now.Year % 100;
-                string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{now.AddDays(2).Day.ToString("D2")}.{month}.{year}.xlsx?forcedownload=1";
-                await DownloadFileAsync(query, replacementsFilePath);
+                    throw;
+                }
             }
+            try
+            {
+                // Парсим файлы
+                mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
+                replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName);
+                updatedSchedule = ApplyReplacements(mainSchedule, replacements);
+            }
+            catch (Exception)
+            {
 
-            // Парсим основной файл
-            var mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
-            // Парсим файл замен
-            var replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName);
-
-            // Применяем замены к основному расписанию
-            var updatedSchedule = ApplyReplacements(mainSchedule, replacements);
-
+                throw;
+            }
+            
             return updatedSchedule;
         }
 
@@ -69,9 +87,7 @@ namespace TheDiaryApp.Repositories
             }
         }
 
-        public StructuredSchedule ApplyReplacements(
-    StructuredSchedule mainSchedule,
-    Dictionary<string, Schedule> replacements)
+        public StructuredSchedule ApplyReplacements(StructuredSchedule mainSchedule,Dictionary<string, Schedule> replacements)
         {
             foreach (var weekPair in mainSchedule.WeekData)
             {

@@ -1,6 +1,4 @@
-﻿using TheDiaryApp.Models;
-using TheDiaryApp.Repositories;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace TheDiaryApp.ViewModels
