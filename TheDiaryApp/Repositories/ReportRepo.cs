@@ -24,10 +24,18 @@ namespace TheDiaryApp.Repositories
             await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
             if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
             {
-                int day = DateTime.Now.Day;
-                int month = DateTime.Now.Month;
-                int Year = DateTime.Now.Year;
-                await DownloadFileAsync($"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{Year}-{day + 2}.{month}.{Year}.xlsx?forcedownload=1", replacementsFilePath);
+                DateTime now = DateTime.Now;
+
+                // Форматируем день, чтобы он был в формате "02"
+                string day = now.Day.ToString("D2");
+                
+                // Форматируем месяц, чтобы он был в формате "02"
+                string month = now.Month.ToString("D2");
+
+                // Форматируем год, чтобы он был в формате "25"
+                int year = now.Year % 100;
+                string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{now.AddDays(2).Day.ToString("D2")}.{month}.{year}.xlsx?forcedownload=1";
+                await DownloadFileAsync(query, replacementsFilePath);
             }
 
             // Парсим основной файл
