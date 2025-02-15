@@ -1,102 +1,128 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TheDiaryApp.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="10" Padding="10">
+	<ScrollView>
+		<VerticalStackLayout Spacing="10" Padding="10">
 
-            <!-- Заголовок -->
-            <Label Text="Расписание"
-                   FontSize="20"
-                   FontAttributes="Bold"
-                   HorizontalOptions="Center"
-                   Margin="0,10"/>
+			<!-- Отображение расписания -->
+			<StackLayout BindableLayout.ItemsSource="{Binding Schedule.WeekData}">
+				<BindableLayout.ItemTemplate>
+					<DataTemplate>
+						<VerticalStackLayout Spacing="5">
 
-            <!-- Отображение расписания -->
-            <StackLayout BindableLayout.ItemsSource="{Binding Schedule.WeekData}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate>
-                        <VerticalStackLayout Spacing="5">
-
-                            <!-- Неделя -->
-                            <Label Text="{Binding Key}" 
+							<!-- Неделя -->
+							<Label Text="{Binding Key}"
                                    FontSize="18"
                                    FontAttributes="Bold"
-                                   TextColor="Black"
-                                   Margin="0,10,0,5"/>
+                                   Margin="0,10,0,5">
+								<Label.TextColor>
+									<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                     Dark="{StaticResource LightOnDarkBackground}" />
+								</Label.TextColor>
+							</Label>
 
-                            <!-- Дни недели -->
-                            <StackLayout BindableLayout.ItemsSource="{Binding Value}">
-                                <BindableLayout.ItemTemplate>
-                                    <DataTemplate>
-                                        <VerticalStackLayout Spacing="5">
+							<!-- Дни недели -->
+							<StackLayout BindableLayout.ItemsSource="{Binding Value}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate>
+										<VerticalStackLayout Spacing="5">
 
-                                            <!-- День недели -->
-                                            <Label Text="{Binding Key}" 
+											<!-- День недели -->
+											<Label Text="{Binding Key}"
                                                    FontSize="16"
                                                    FontAttributes="Bold"
-                                                   TextColor="Gray"
-                                                   Margin="10,5,0,0"/>
+                                                   Margin="10,5,0,0">
+												<Label.TextColor>
+													<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                                     Dark="{StaticResource LightOnDarkBackground}" />
+												</Label.TextColor>
+											</Label>
 
-                                            <!-- Пары -->
-                                            <StackLayout BindableLayout.ItemsSource="{Binding Value}">
-                                                <BindableLayout.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Frame Padding="10"
-                                                               BackgroundColor="#F5F5F5"
+											<!-- Пары -->
+											<StackLayout BindableLayout.ItemsSource="{Binding Value}">
+												<BindableLayout.ItemTemplate>
+													<DataTemplate>
+														<Frame Padding="10"
                                                                CornerRadius="5"
                                                                Margin="10,0,10,5">
-                                                            <Grid ColumnDefinitions="30*,70*"
+															<Frame.BackgroundColor>
+																<AppThemeBinding Light="{StaticResource LightSecondaryBackground}"
+                                                                                 Dark="{StaticResource DarkSecondaryBackground}" />
+															</Frame.BackgroundColor>
+															<Grid ColumnDefinitions="30*,70*"
                                                                   RowDefinitions="*,*,*">
 
-                                                                <!-- Номер пары -->
-                                                                <Label Text="{Binding LessonNumber}"
+																<!-- Номер пары -->
+																<Label Text="{Binding LessonNumber}"
                                                                        FontAttributes="Bold"
                                                                        FontSize="16"
                                                                        VerticalOptions="Center"
                                                                        Grid.Column="0"
-                                                                       Grid.RowSpan="3"/>
+                                                                       Grid.RowSpan="3">
+																	<Label.TextColor>
+																		<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                                                         Dark="{StaticResource LightOnDarkBackground}" />
+																	</Label.TextColor>
+																</Label>
 
-                                                                <!-- Предмет -->
-                                                                <Label Text="{Binding Subject}"
+																<!-- Предмет -->
+																<Label Text="{Binding Subject}"
                                                                        FontSize="14"
                                                                        Grid.Column="1"
-                                                                       Grid.Row="0"/>
+                                                                       Grid.Row="0">
+																	<Label.TextColor>
+																		<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                                                         Dark="{StaticResource LightOnDarkBackground}" />
+																	</Label.TextColor>
+																</Label>
 
-                                                                <!-- Преподаватель -->
-                                                                <Label Text="{Binding Teacher}"
+																<!-- Преподаватель -->
+																<Label Text="{Binding Teacher}"
                                                                        FontSize="12"
-                                                                       TextColor="Gray"
                                                                        Grid.Column="1"
-                                                                       Grid.Row="1"/>
+                                                                       Grid.Row="1">
+																	<Label.TextColor>
+																		<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                                                         Dark="{StaticResource LightOnDarkBackground}" />
+																	</Label.TextColor>
+																</Label>
 
-                                                                <!-- Аудитория -->
-                                                                <Label Text="{Binding Room}"
+																<!-- Аудитория -->
+																<Label Text="{Binding Room}"
                                                                        FontSize="12"
-                                                                       TextColor="Gray"
                                                                        Grid.Column="1"
-                                                                       Grid.Row="2"/>
-                                                            </Grid>
-                                                        </Frame>
-                                                    </DataTemplate>
-                                                </BindableLayout.ItemTemplate>
-                                            </StackLayout>
-                                        </VerticalStackLayout>
-                                    </DataTemplate>
-                                </BindableLayout.ItemTemplate>
-                            </StackLayout>
-                        </VerticalStackLayout>
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </StackLayout>
+                                                                       Grid.Row="2">
+																	<Label.TextColor>
+																		<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                                                                         Dark="{StaticResource LightOnDarkBackground}" />
+																	</Label.TextColor>
+																</Label>
+															</Grid>
+														</Frame>
+													</DataTemplate>
+												</BindableLayout.ItemTemplate>
+											</StackLayout>
+										</VerticalStackLayout>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</StackLayout>
+						</VerticalStackLayout>
+					</DataTemplate>
+				</BindableLayout.ItemTemplate>
+			</StackLayout>
 
-            <!-- Сообщение при отсутствии данных -->
-            <Label Text="Расписание не найдено"
+			<!-- Сообщение при отсутствии данных -->
+			<Label Text="Расписание не найдено"
                    IsVisible="{Binding IsEmpty}"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   Margin="20"/>
-        </VerticalStackLayout>
-    </ScrollView>
+                   Margin="20">
+				<Label.TextColor>
+					<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                     Dark="{StaticResource LightOnDarkBackground}" />
+				</Label.TextColor>
+			</Label>
+		</VerticalStackLayout>
+	</ScrollView>
 </ContentPage>

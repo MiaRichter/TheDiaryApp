@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Toolkit.Hosting;
-using TheDiaryApp.Helpers;
-using TheDiaryApp.Repositories;
+
 
 namespace TheDiaryApp;
 
@@ -34,8 +33,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ReportRepo>();
 		builder.Services.AddSingleton<ExcelParser>();
 		builder.Services.AddSingleton<ReplacementParser>();
+        builder.Services.AddSingleton<InvertedBoolConverter>();
 
-		
-		return builder.Build();
+        return builder.Build();
 	}
 }

@@ -35,13 +35,45 @@
                     string month = now.Month.ToString("D2");
                     // Форматируем год, чтобы он был в формате "25"
                     int year = now.Year % 100;
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday)
+                    string endDate = now.AddDays(2).Day.ToString("D2");
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday) //если сегодня воскресенье то покажи расписание с понедельника по среду
                     {
                         day = now.AddDays(1).Day.ToString("D2");
+                        endDate = now.AddDays(3).Day.ToString("D2");
                     }
-                    string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{now.AddDays(2).Day.ToString("D2")}.{month}.{year}.xlsx?forcedownload=1";
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // если сегодня вторник то покажи расписание с понедельника по среду
+                    {
+                        day = now.AddDays(-1).Day.ToString("D2");
+                        endDate = now.AddDays(1).Day.ToString("D2");
+                    }
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour == 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
+                    {
+                        day = now.AddDays(1).Day.ToString("D2");
+                        endDate = now.AddDays(3).Day.ToString("D2");
+                    }
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Friday) // если сегодня пятница то покажи расписание с четверга по субботу
+                    {
+                        day = now.AddDays(-1).Day.ToString("D2");
+                        endDate = now.AddDays(1).Day.ToString("D2");
+                    }
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday) // если сегодня суббота то покажи расписание с четверга по субботу
+                    {
+                        day = now.AddDays(-2).Day.ToString("D2");
+                        endDate = now.AddDays(0).Day.ToString("D2");
+                    }
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour == 21) // если сегодня суббота то покажи расписание с понедельника по среду
+                    {
+                        day = now.AddDays(2).Day.ToString("D2");
+                        endDate = now.AddDays(4).Day.ToString("D2");
+                    }
+
+                    string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{endDate}.{month}.{year}.xlsx?forcedownload=1";
                     await DownloadFileAsync(query, replacementsFilePath);
                 }
+            }
+            else
+            {
+                Console.WriteLine("Внимание нет интернета! Расписание может быть не актуальным!"); //заглушка под вывод сообщения на экране
             }
             mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
             replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName);
