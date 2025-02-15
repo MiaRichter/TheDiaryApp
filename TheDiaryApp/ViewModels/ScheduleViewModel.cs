@@ -1,7 +1,8 @@
-﻿using TheDiaryApp.Models;
-using TheDiaryApp.Repositories;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Networking;
 
 namespace TheDiaryApp.ViewModels
 {
@@ -9,11 +10,21 @@ namespace TheDiaryApp.ViewModels
     {
         private readonly ReportRepo _reportRepo;
         private StructuredSchedule _schedule;
+        private bool _isRefreshing;
+        private bool _isInternetAvailable = true;
 
         public ScheduleViewModel(ReportRepo reportRepo)
         {
             _reportRepo = reportRepo;
-            LoadSchedule();
+
+            // Подписка на изменение состояния сети
+            Connectivity.ConnectivityChanged += OnConnectivityChanged;
+
+            // Команда для обновления
+            RefreshCommand = new AsyncRelayCommand(RefreshScheduleAsync);
+
+            // Загрузка расписания при запуске
+            LoadScheduleAsync(); // Используем асинхронный метод без ожидания
         }
 
         public StructuredSchedule Schedule
@@ -26,7 +37,16 @@ namespace TheDiaryApp.ViewModels
                 OnPropertyChanged(nameof(IsEmpty));
             }
         }
-        private bool _isInternetAvailable = true;
+
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set
+            {
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsInternetAvailable
         {
@@ -40,17 +60,51 @@ namespace TheDiaryApp.ViewModels
 
         public bool IsEmpty => Schedule?.WeekData?.Count == 0;
 
-        private async void LoadSchedule()
+        public ICommand RefreshCommand { get; }
+
+        private async Task RefreshScheduleAsync()
+        {
+            IsRefreshing = true;
+
+            try
+            {
+                await LoadSchedule(); // Теперь это асинхронный вызов
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async Task LoadSchedule()
         {
             var currentNetworkAccess = Connectivity.NetworkAccess;
             IsInternetAvailable = currentNetworkAccess == NetworkAccess.Internet;
+
             if (!IsInternetAvailable)
             {
                 // Выводим сообщение об отсутствии интернета
-                Console.WriteLine("Внимание: нет интернета! Расписание может быть не актуальным.");
+                await Shell.Current.DisplayAlert("Внимание", "Нет интернета! Расписание может быть не актуальным.", "OK");
             }
+
             // Загрузите расписание для группы и подгруппы
             Schedule = await _reportRepo.ReportAsync("Кск-21-1", 1); // Укажите группу и подгруппу
+        }
+
+        private async void LoadScheduleAsync()
+        {
+            await LoadSchedule();
+        }
+
+        private async void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            IsInternetAvailable = e.NetworkAccess == NetworkAccess.Internet;
+
+            if (!IsInternetAvailable)
+            {
+                // Выводим сообщение об отсутствии интернета
+                await Shell.Current.DisplayAlert("Внимание", "Нет интернета! Расписание может быть не актуальным.", "OK");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
