@@ -126,7 +126,7 @@ namespace TheDiaryApp.ViewModels
             int weekNumber = calendar.GetWeekOfYear(now, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
             // Возвращаем true, если неделя четная, иначе false
             bool isParity = weekNumber % 2 == 0;
-            if ((now.DayOfWeek == DayOfWeek.Saturday && now.Hour == 21) || now.DayOfWeek == DayOfWeek.Sunday)
+            if ((now.DayOfWeek == DayOfWeek.Saturday && now.Hour >= 21) || now.DayOfWeek == DayOfWeek.Sunday)
             {
                 isParity = !isParity;
             }

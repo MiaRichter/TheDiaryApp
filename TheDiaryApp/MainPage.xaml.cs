@@ -2,12 +2,10 @@
 {
     public partial class MainPage : ContentPage
     {
-        public MainPage()
+        public MainPage(ScheduleViewModel viewModel)
         {
             InitializeComponent();
-            var reportRepo = new ReportRepo(new ExcelParser(), new ReplacementParser());
-            BindingContext = new ScheduleViewModel(reportRepo);
+            BindingContext = viewModel;
         }
     }
-
 }

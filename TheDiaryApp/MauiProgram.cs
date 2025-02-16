@@ -21,8 +21,6 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-				fonts.AddFont("SegoeUI-Semibold.ttf", "SegoeSemibold");
-				fonts.AddFont("FluentSystemIcons-Regular.ttf", FluentUI.FontFamily);
 			});
 
 #if DEBUG
@@ -34,6 +32,10 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ExcelParser>();
 		builder.Services.AddSingleton<ReplacementParser>();
         builder.Services.AddSingleton<InvertedBoolConverter>();
+        builder.Services.AddSingleton<ScheduleBackgroundTask>();
+        builder.Services.AddSingleton<BackgroundTaskScheduler>();
+        builder.Services.AddSingleton<ScheduleViewModel>();
+        builder.Services.AddSingleton<MainPage>();
 
         return builder.Build();
 	}
