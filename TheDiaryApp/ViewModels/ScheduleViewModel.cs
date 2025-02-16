@@ -89,6 +89,9 @@ namespace TheDiaryApp.ViewModels
 
             // Загрузите расписание для группы и подгруппы
             Schedule = await _reportRepo.ReportAsync("Кск-21-1", 1); // Укажите группу и подгруппу
+
+            // Фильтруем расписание по типу недели
+            FilterScheduleByWeekType();
         }
 
         private async void LoadScheduleAsync()
@@ -111,6 +114,41 @@ namespace TheDiaryApp.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool IsEvenWeek()
+        {
+            // Получаем текущую дату
+            DateTime now = DateTime.Now;
+
+            // Получаем номер недели в году
+            var calendar = System.Globalization.DateTimeFormatInfo.CurrentInfo.Calendar;
+            int weekNumber = calendar.GetWeekOfYear(now, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            // Возвращаем true, если неделя четная, иначе false
+            bool isParity = weekNumber % 2 == 0;
+            if ((now.DayOfWeek == DayOfWeek.Saturday && now.Hour == 21) || now.DayOfWeek == DayOfWeek.Sunday)
+            {
+                isParity = !isParity;
+            }
+            return isParity;
+        }
+
+        private void FilterScheduleByWeekType()
+        {
+            if (Schedule == null || Schedule.WeekData == null)
+                return;
+
+            // Определяем тип текущей недели
+            string currentWeekType = IsEvenWeek() ? "Четная неделя" : "Нечетная неделя";
+
+            // Фильтруем данные, оставляя только текущую неделю
+            var filteredWeekData = Schedule.WeekData
+                .Where(week => week.Key == currentWeekType)
+                .ToDictionary(week => week.Key, week => week.Value);
+
+            // Обновляем Schedule
+            Schedule.WeekData = filteredWeekData;
+            OnPropertyChanged(nameof(Schedule));
         }
     }
 }
