@@ -20,13 +20,47 @@ namespace TheDiaryApp.Repositories
             // Пути к файлам
             await InitializeFilesAsync();
             string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
+            string copymainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
             string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
 
-            // Проверка наличия интернета
+            // Проверка наличия интернета 2510358 2510356 1936751 2510365
             var currentNetworkAccess = Connectivity.NetworkAccess;
+            var group = "Мг-22-1";
             if (currentNetworkAccess == NetworkAccess.Internet)
             {
-                await DownloadFileAsync("https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/%D0%9A%D1%81%D0%9A-21-1.xlsx?forcedownload=1", mainFilePath);
+                int n = 0;
+                while (mainFilePath == copymainFilePath)
+                {
+                    switch (n)
+                    {
+                        case 0:
+                            await DownloadFileAsync(
+                                $"https://newlms.magtu.ru/pluginfile.php/1936751/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                mainFilePath);
+                            n++;
+                            continue;
+                        case 1:
+                            await DownloadFileAsync(
+                                $"https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                mainFilePath);
+                            n++;
+                            continue;
+                        case 2:
+                            await DownloadFileAsync(
+                                $"https://newlms.magtu.ru/pluginfile.php/2510358/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                mainFilePath);
+                            n++;
+                            continue;
+                        case 3:
+                            await DownloadFileAsync(
+                                $"https://newlms.magtu.ru/pluginfile.php/2510365/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                mainFilePath);
+                            n++;
+                            continue;
+                    }
+                    if (n > 3)
+                        break;
+                }
                 if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Sunday.ToString())
                 {
                     DateTime now = DateTime.Now;
@@ -77,7 +111,7 @@ namespace TheDiaryApp.Repositories
                 Console.WriteLine("Внимание нет интернета! Расписание может быть не актуальным!"); //заглушка под вывод сообщения на экране
             }
             mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
-            replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName);
+            replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName, subGroup);
             updatedSchedule = ApplyReplacements(mainSchedule, replacements);
 
 
@@ -107,8 +141,6 @@ namespace TheDiaryApp.Repositories
             }
             catch (Exception ex)
             {
-
-                throw;
             }
         }
 

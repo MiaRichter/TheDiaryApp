@@ -5,7 +5,7 @@ namespace TheDiaryApp.Helpers
 {
     public class ReplacementParser
     {
-        public Dictionary<string, Schedule> ParseReplacements(string filePath, string targetGroup)
+        public Dictionary<string, Schedule> ParseReplacements(string filePath, string targetGroup, int subGroup)
         {
             var replacements = new Dictionary<string, Schedule>();
 
