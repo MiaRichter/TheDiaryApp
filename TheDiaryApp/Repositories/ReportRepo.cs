@@ -47,7 +47,7 @@ namespace TheDiaryApp.Repositories
                         day = now.AddDays(-1).Day.ToString("D2");
                         endDate = now.AddDays(1).Day.ToString("D2");
                     }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour == 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour >= 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
                     {
                         day = now.AddDays(1).Day.ToString("D2");
                         endDate = now.AddDays(3).Day.ToString("D2");
@@ -62,7 +62,7 @@ namespace TheDiaryApp.Repositories
                         day = now.AddDays(-2).Day.ToString("D2");
                         endDate = now.AddDays(0).Day.ToString("D2");
                     }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour == 21) // если сегодня суббота то покажи расписание с понедельника по среду
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour >= 21) // если сегодня суббота то покажи расписание с понедельника по среду
                     {
                         day = now.AddDays(2).Day.ToString("D2");
                         endDate = now.AddDays(4).Day.ToString("D2");

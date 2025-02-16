@@ -126,7 +126,7 @@ namespace TheDiaryApp.ViewModels
             int weekNumber = calendar.GetWeekOfYear(now, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
             // Возвращаем true, если неделя четная, иначе false
             bool isParity = weekNumber % 2 == 0;
-            if ((now.DayOfWeek == DayOfWeek.Saturday && now.Hour == 21) || now.DayOfWeek == DayOfWeek.Sunday)
+            if ((now.DayOfWeek == DayOfWeek.Saturday && now.Hour >= 21) || now.DayOfWeek == DayOfWeek.Sunday)
             {
                 isParity = !isParity;
             }
@@ -161,14 +161,9 @@ namespace TheDiaryApp.ViewModels
             var now = DateTime.Now;
 
             // Сдвигаем текущий день недели в зависимости от условий
-            if (now.DayOfWeek == DayOfWeek.Saturday && now.Hour >= 21)
-            {
-                now = now.AddDays(2); // Если суббота и время 21:00 или позже, сдвигаем на понедельник
-            }
-            else if (now.DayOfWeek == DayOfWeek.Sunday)
-            {
-                now = now.AddDays(1); // Если воскресенье, сдвигаем на понедельник
-            }
+            if (now.DayOfWeek == DayOfWeek.Saturday && now.Hour >= 21) now = now.AddDays(2); // Если суббота и время 21:00 или позже, сдвигаем на понедельник
+            if (now.DayOfWeek == DayOfWeek.Sunday) now = now.AddDays(1); // Если воскресенье, сдвигаем на понедельник
+            if (now.Hour == 21) now = now.AddDays(1); // Если 21:00 то смени отображение текущего дня на следующий
 
             // Получаем текущий день недели после сдвига
             string today = now.DayOfWeek switch
