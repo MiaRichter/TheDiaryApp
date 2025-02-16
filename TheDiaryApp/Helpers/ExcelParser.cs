@@ -59,7 +59,6 @@ namespace TheDiaryApp.Helpers
                                 result.WeekData[currentWeekType][cellValue] = new List<Schedule>();
                             }
                         }
-                        //rowIdx++; // Пропустить строку с днями
                         continue;
                     }
 
@@ -83,6 +82,9 @@ namespace TheDiaryApp.Helpers
 
                                 if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(teacher))
                                 {
+                                    // Определение времени проведения пары
+                                    string time = GetLessonTime(day.Key, lessonNumber);
+
                                     result.WeekData[currentWeekType][day.Key].Add(new Schedule
                                     {
                                         GroupName = groupName,
@@ -92,10 +94,10 @@ namespace TheDiaryApp.Helpers
                                         LessonNumber = lessonNumber,
                                         Subject = subject,
                                         Teacher = teacher,
-                                        Room = room
+                                        Room = room,
+                                        Time = time
                                     });
                                 }
-                                //rowIdx++; // Пропуск строки с преподавателем
                             }
                         }
                     }
@@ -112,6 +114,36 @@ namespace TheDiaryApp.Helpers
             }
 
             return result;
+        }
+
+        public string GetLessonTime(string dayOfWeek, int lessonNumber)
+        {
+            if (dayOfWeek == "Суббота")
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "11:50-13:20",
+                    4 => "13:30-15:00",
+                    5 => "15:10-16:40",
+                    6 => "16:50-18:20",
+                    _ => "Неизвестное время"
+                };
+            }
+            else
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "12:20-13:50",
+                    4 => "14:20-15:50",
+                    5 => "16:00-17:30",
+                    6 => "17:40-19:10",
+                    _ => "Неизвестное время"
+                };
+            }
         }
 
         private bool IsDayOfWeek(string value) =>

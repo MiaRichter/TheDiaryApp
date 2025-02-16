@@ -1,4 +1,5 @@
-﻿namespace TheDiaryApp.Repositories
+﻿using TheDiaryApp.Helpers;
+namespace TheDiaryApp.Repositories
 {
     public class ReportRepo
     {
@@ -130,7 +131,6 @@
                     {
                         // Очищаем список пар на этот день
 
-
                         // Добавляем замены
                         foreach (var replacement in dayReplacements.Values)
                         {
@@ -152,6 +152,7 @@
                                 daySchedules[lessonreplays].Room = replacement.Room;
                                 daySchedules[lessonreplays].GroupName = replacement.GroupName;
                                 daySchedules[lessonreplays].SubGroup = replacement.SubGroup;
+                                daySchedules[lessonreplays].Time = GetLessonTime(dayOfWeek, replacement.LessonNumber);
                             }
                             else
                             {
@@ -164,7 +165,8 @@
                                     Teacher = replacement.Teacher,
                                     Room = replacement.Room,
                                     GroupName = replacement.GroupName,
-                                    SubGroup = replacement.SubGroup
+                                    SubGroup = replacement.SubGroup,
+                                    Time = GetLessonTime(dayOfWeek, replacement.LessonNumber)
                                 });
                             }
                         }
@@ -199,6 +201,36 @@
             using (var replacementsFileStream = new FileStream(replacementsFilePath, FileMode.Create, FileAccess.Write))
             {
                 await replacementsStream.CopyToAsync(replacementsFileStream);
+            }
+        }
+
+        public static string GetLessonTime(string dayOfWeek, int lessonNumber)
+        {
+            if (dayOfWeek == "Суббота")
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "11:50-13:20",
+                    4 => "13:30-15:00",
+                    5 => "15:10-16:40",
+                    6 => "16:50-18:20",
+                    _ => "Неизвестное время"
+                };
+            }
+            else
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "12:20-13:50",
+                    4 => "14:20-15:50",
+                    5 => "16:00-17:30",
+                    6 => "17:40-19:10",
+                    _ => "Неизвестное время"
+                };
             }
         }
     }
