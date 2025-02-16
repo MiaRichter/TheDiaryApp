@@ -51,58 +51,69 @@
 													<BindableLayout.ItemTemplate>
 														<DataTemplate>
 															<Frame Padding="10"
-                                                                   CornerRadius="5"
-                                                                   Margin="10,0,10,5">
+       CornerRadius="5"
+       Margin="10,0,10,5">
 																<Frame.BackgroundColor>
 																	<AppThemeBinding Light="{StaticResource LightSecondaryBackground}"
-                                                                                     Dark="{StaticResource DarkSecondaryBackground}" />
+																					 Dark="{StaticResource DarkSecondaryBackground}" />
 																</Frame.BackgroundColor>
 																<Grid ColumnDefinitions="30*,70*"
-                                                                      RowDefinitions="*,*,*">
+																	  RowDefinitions="*,*,*,*">
 
 																	<!-- Номер пары -->
 																	<Label Text="{Binding LessonNumber}"
-                                                                           FontAttributes="Bold"
-                                                                           FontSize="16"
-                                                                           VerticalOptions="Center"
-                                                                           Grid.Column="0"
-                                                                           Grid.RowSpan="3">
+																		   FontAttributes="Bold"
+																		   FontSize="16"
+																		   VerticalOptions="Center"
+																		   Grid.Column="0"
+																		   Grid.RowSpan="4">
 																		<Label.TextColor>
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
-                                                                                             Dark="{StaticResource LightOnDarkBackground}" />
+																							 Dark="{StaticResource LightOnDarkBackground}" />
+																		</Label.TextColor>
+																	</Label>
+
+																	<!-- Время проведения пары -->
+																	<Label Text="{Binding Time}"
+																		   FontSize="12"
+																		   Grid.Column="1"
+																		   Grid.Row="0">
+																		<Label.TextColor>
+																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
 																	</Label>
 
 																	<!-- Предмет -->
 																	<Label Text="{Binding Subject}"
-                                                                           FontSize="14"
-                                                                           Grid.Column="1"
-                                                                           Grid.Row="0">
+																		   FontSize="14"
+																		   Grid.Column="1"
+																		   Grid.Row="1">
 																		<Label.TextColor>
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
-                                                                                             Dark="{StaticResource LightOnDarkBackground}" />
+																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
 																	</Label>
 
 																	<!-- Преподаватель -->
 																	<Label Text="{Binding Teacher}"
-                                                                           FontSize="12"
-                                                                           Grid.Column="1"
-                                                                           Grid.Row="1">
+																		   FontSize="12"
+																		   Grid.Column="1"
+																		   Grid.Row="2">
 																		<Label.TextColor>
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
-                                                                                             Dark="{StaticResource LightOnDarkBackground}" />
+																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
 																	</Label>
 
 																	<!-- Аудитория -->
 																	<Label Text="{Binding Room}"
-                                                                           FontSize="12"
-                                                                           Grid.Column="1"
-                                                                           Grid.Row="2">
+																		   FontSize="12"
+																		   Grid.Column="1"
+																		   Grid.Row="3">
 																		<Label.TextColor>
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
-                                                                                             Dark="{StaticResource LightOnDarkBackground}" />
+																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
 																	</Label>
 																</Grid>
