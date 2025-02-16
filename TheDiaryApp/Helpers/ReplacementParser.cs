@@ -61,32 +61,65 @@ namespace TheDiaryApp.Helpers
                     var lessonContent = worksheet.Cells[row, groupColumn].Text.Trim();
                     if (string.IsNullOrWhiteSpace(lessonContent))
                         continue;
-                    if (lessonContent.Contains("------------"))
+                    Schedule schedule;
+                    if (lessonContent.Contains("1.") || lessonContent.Contains("2."))
                     {
-                        // Маркируем пару на удаление
-                        replacements[$"{dayOfWeek}_{lessonNumber}"] = new Schedule
+                        if (lessonContent.Contains("------------"))
+                        {
+                            // Маркируем пару на удаление
+                            replacements[$"{dayOfWeek}_{lessonNumber}"] = new Schedule
+                            {
+                                DayOfWeek = dayOfWeek,
+                                LessonNumber = lessonNumber,
+                                Subject = "REMOVE_FLAG",
+                                GroupName = targetGroup
+                            };
+                            continue;
+                        }
+                        var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(p => p.Trim()).ToArray();
+
+                        schedule = new Schedule
                         {
                             DayOfWeek = dayOfWeek,
                             LessonNumber = lessonNumber,
-                            Subject = "REMOVE_FLAG",
-                            GroupName = targetGroup
+                            Subject = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], subGroup+". ", "  ") : "",
+                            Teacher = parts.Length > 1 + rawlesson ? parts[1 + rawlesson] : "",
+                            Room = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], "  ", "") : "",
+                            GroupName = targetGroup,
+                            SubGroup = subGroup,
+                            Time = GetLessonTime(dayOfWeek, lessonNumber)
                         };
-                        continue;
                     }
-                    var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(p => p.Trim()).ToArray();
-
-                    var schedule = new Schedule
+                    else
                     {
-                        DayOfWeek = dayOfWeek,
-                        LessonNumber = lessonNumber,
-                        Subject = parts.Length > 0 + rawlesson ? "(" + ExtractSubstring(parts[0 + rawlesson], "(", "  ") : "",
-                        Teacher = parts.Length > 1 + rawlesson ? parts[1 + rawlesson] : "",
-                        Room = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], "  ", "") : "",
-                        GroupName = targetGroup,
-                        SubGroup = 1,
-                        Time = GetLessonTime(dayOfWeek, lessonNumber)
-                    };
+                        if (lessonContent.Contains("------------"))
+                        {
+                            // Маркируем пару на удаление
+                            replacements[$"{dayOfWeek}_{lessonNumber}"] = new Schedule
+                            {
+                                DayOfWeek = dayOfWeek,
+                                LessonNumber = lessonNumber,
+                                Subject = "REMOVE_FLAG",
+                                GroupName = targetGroup
+                            };
+                            continue;
+                        }
+                        var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(p => p.Trim()).ToArray();
+
+                        schedule = new Schedule
+                        {
+                            DayOfWeek = dayOfWeek,
+                            LessonNumber = lessonNumber,
+                            Subject = parts.Length > 0 + rawlesson ? "(" + ExtractSubstring(parts[0 + rawlesson], "(", "  ") : "",
+                            Teacher = parts.Length > 1 + rawlesson ? parts[1 + rawlesson] : "",
+                            Room = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], "  ", "") : "",
+                            GroupName = targetGroup,
+                            SubGroup = 1,
+                            Time = GetLessonTime(dayOfWeek, lessonNumber)
+                        };
+                    }
                     rawlesson = 0;
                     var key = $"{dayOfWeek}_{lessonNumber}";
                     replacements[key] = schedule;
