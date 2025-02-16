@@ -82,10 +82,37 @@ namespace TheDiaryApp.Helpers
                             var teacher2 = worksheet.Cells[rowIdx + 1, dayCol + 3].Text.Trim();
                             var room2 = worksheet.Cells[rowIdx + 1, dayCol + 4].Text.Trim();
 
-                            // Выбор в зависимости от подгруппы
-                            string selectedSubject = (subGroup == 1) ? subject1 : subject2;
-                            string selectedTeacher = (subGroup == 1) ? teacher1 : teacher2;
-                            string selectedRoom = (subGroup == 1) ? room1 : room2;
+                            bool isCommonPair = string.IsNullOrEmpty(teacher2)
+                                                && !string.IsNullOrEmpty(room2);
+
+                            // Выбираем пару в зависимости от подгруппы
+                            string selectedSubject = "";
+                            string selectedTeacher = "";
+                            string selectedRoom = "";
+
+                            if (isCommonPair)
+                            {
+                                // Общая пара для обеих подгрупп
+                                selectedSubject = subject1;
+                                selectedTeacher = teacher1;
+                                selectedRoom = room2;
+                            }
+                            else
+                            {
+                                // Отдельные пары для каждой подгруппы
+                                if (subGroup == 1)
+                                {
+                                    selectedSubject = !string.IsNullOrEmpty(subject1) ? subject1 : "";
+                                    selectedTeacher = !string.IsNullOrEmpty(teacher1) ? teacher1 : "";
+                                    selectedRoom = !string.IsNullOrEmpty(room1) ? room1 : "";
+                                }
+                                else if (subGroup == 2)
+                                {
+                                    selectedSubject = !string.IsNullOrEmpty(subject2) ? subject2 : "";
+                                    selectedTeacher = !string.IsNullOrEmpty(teacher2) ? teacher2 : "";
+                                    selectedRoom = !string.IsNullOrEmpty(room2) ? room2 : "";
+                                }
+                            }
 
                             if (!string.IsNullOrEmpty(selectedSubject) && !string.IsNullOrEmpty(selectedTeacher))
                             {

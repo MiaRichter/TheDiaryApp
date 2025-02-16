@@ -25,35 +25,34 @@ namespace TheDiaryApp.Repositories
 
             // Проверка наличия интернета 2510358 2510356 1936751 2510365
             var currentNetworkAccess = Connectivity.NetworkAccess;
-            var group = "Мг-22-1";
             if (currentNetworkAccess == NetworkAccess.Internet)
             {
                 int n = 0;
-                while (mainFilePath == copymainFilePath)
+                while (true)
                 {
                     switch (n)
                     {
                         case 0:
                             await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/1936751/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                $"https://newlms.magtu.ru/pluginfile.php/1936751/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
                                 mainFilePath);
                             n++;
                             continue;
                         case 1:
                             await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                $"https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
                                 mainFilePath);
                             n++;
                             continue;
                         case 2:
                             await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510358/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                $"https://newlms.magtu.ru/pluginfile.php/2510358/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
                                 mainFilePath);
                             n++;
                             continue;
                         case 3:
                             await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510365/mod_folder/content/0/{group}.xlsx?forcedownload=1",
+                                $"https://newlms.magtu.ru/pluginfile.php/2510365/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
                                 mainFilePath);
                             n++;
                             continue;
@@ -161,45 +160,33 @@ namespace TheDiaryApp.Repositories
 
                     if (dayReplacements.Any())
                     {
-                        // Очищаем список пар на этот день
+                        // Удаляем пары, помеченные на удаление
+                        var removals = dayReplacements
+                            .Where(r => r.Value.Subject == "REMOVE_FLAG")
+                            .Select(r => r.Value.LessonNumber)
+                            .ToList();
 
-                        // Добавляем замены
+                        daySchedules.RemoveAll(schedule => removals.Contains(schedule.LessonNumber));
+
+                        // Применяем замены
                         foreach (var replacement in dayReplacements.Values)
                         {
-                            var lessonreplays = -1;
-                            for (var i = 0; i < daySchedules.Count; i++)
+                            if (replacement.Subject == "REMOVE_FLAG")
+                                continue; // Пропускаем удаленные пары
+
+                            var existing = daySchedules.FirstOrDefault(s => s.LessonNumber == replacement.LessonNumber);
+                            if (existing != null)
                             {
-                                if (daySchedules[i].LessonNumber == replacement.LessonNumber)
-                                {
-                                    lessonreplays = i;
-                                    continue;
-                                }
-                            }
-                            if (lessonreplays > -1)
-                            {
-                                daySchedules[lessonreplays].DayOfWeek = dayOfWeek;
-                                daySchedules[lessonreplays].LessonNumber = replacement.LessonNumber;
-                                daySchedules[lessonreplays].Subject = replacement.Subject;
-                                daySchedules[lessonreplays].Teacher = replacement.Teacher;
-                                daySchedules[lessonreplays].Room = replacement.Room;
-                                daySchedules[lessonreplays].GroupName = replacement.GroupName;
-                                daySchedules[lessonreplays].SubGroup = replacement.SubGroup;
-                                daySchedules[lessonreplays].Time = GetLessonTime(dayOfWeek, replacement.LessonNumber);
+                                // Обновляем существующую пару
+                                existing.Subject = replacement.Subject;
+                                existing.Teacher = replacement.Teacher;
+                                existing.Room = replacement.Room;
+                                existing.Time = replacement.Time;
                             }
                             else
                             {
-                                // Добавляем замену в список
-                                daySchedules.Add(new Schedule
-                                {
-                                    DayOfWeek = dayOfWeek,
-                                    LessonNumber = replacement.LessonNumber,
-                                    Subject = replacement.Subject,
-                                    Teacher = replacement.Teacher,
-                                    Room = replacement.Room,
-                                    GroupName = replacement.GroupName,
-                                    SubGroup = replacement.SubGroup,
-                                    Time = GetLessonTime(dayOfWeek, replacement.LessonNumber)
-                                });
+                                // Добавляем новую пару
+                                daySchedules.Add(replacement);
                             }
                         }
 
@@ -236,34 +223,5 @@ namespace TheDiaryApp.Repositories
             }
         }
 
-        public static string GetLessonTime(string dayOfWeek, int lessonNumber)
-        {
-            if (dayOfWeek == "Суббота")
-            {
-                return lessonNumber switch
-                {
-                    1 => "08:30-10:00",
-                    2 => "10:10-11:40",
-                    3 => "11:50-13:20",
-                    4 => "13:30-15:00",
-                    5 => "15:10-16:40",
-                    6 => "16:50-18:20",
-                    _ => "Неизвестное время"
-                };
-            }
-            else
-            {
-                return lessonNumber switch
-                {
-                    1 => "08:30-10:00",
-                    2 => "10:10-11:40",
-                    3 => "12:20-13:50",
-                    4 => "14:20-15:50",
-                    5 => "16:00-17:30",
-                    6 => "17:40-19:10",
-                    _ => "Неизвестное время"
-                };
-            }
-        }
     }
 }
