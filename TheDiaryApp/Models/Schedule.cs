@@ -11,6 +11,7 @@
         public string? GroupName { get; set; } // Название группы
         public int SubGroup { get; set; } // Номер подгруппы
         public string? Time { get; set; } // Время проведения пары
+        public bool IsToday { get; set; } // Флаг, указывающий, является ли день сегодняшним
     }
     public class StructuredSchedule
     {

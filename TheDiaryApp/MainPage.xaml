@@ -57,6 +57,15 @@
 																	<AppThemeBinding Light="{StaticResource LightSecondaryBackground}"
 																					 Dark="{StaticResource DarkSecondaryBackground}" />
 																</Frame.BackgroundColor>
+																<Frame.Triggers>
+																	<DataTrigger TargetType="Frame"
+																				 Binding="{Binding IsToday}"
+																				 Value="True">
+																		<Setter Property="BackgroundColor"
+																				Value="{AppThemeBinding Light={StaticResource TodayLightColor},
+                                            Dark={StaticResource TodayDarkColor}}" />
+																	</DataTrigger>
+																</Frame.Triggers>
 																<Grid ColumnDefinitions="30*,70*"
 																	  RowDefinitions="*,*,*,*">
 
@@ -71,6 +80,15 @@
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
 																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label"
+																						 Binding="{Binding IsToday}"
+																						 Value="True">
+																				<Setter Property="TextColor"
+																						Value="{AppThemeBinding Light={StaticResource TodayTextLightColor},
+                                                     Dark={StaticResource TodayTextDarkColor}}" />
+																			</DataTrigger>
+																		</Label.Triggers>
 																	</Label>
 
 																	<!-- Время проведения пары -->
@@ -82,6 +100,15 @@
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
 																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label"
+																						 Binding="{Binding IsToday}"
+																						 Value="True">
+																				<Setter Property="TextColor"
+																						Value="{AppThemeBinding Light={StaticResource TodayTextLightColor},
+                                                     Dark={StaticResource TodayTextDarkColor}}" />
+																			</DataTrigger>
+																		</Label.Triggers>
 																	</Label>
 
 																	<!-- Предмет -->
@@ -93,6 +120,15 @@
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
 																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label"
+																						 Binding="{Binding IsToday}"
+																						 Value="True">
+																				<Setter Property="TextColor"
+																						Value="{AppThemeBinding Light={StaticResource TodayTextLightColor},
+                                                     Dark={StaticResource TodayTextDarkColor}}" />
+																			</DataTrigger>
+																		</Label.Triggers>
 																	</Label>
 
 																	<!-- Преподаватель -->
@@ -104,6 +140,15 @@
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
 																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label"
+																						 Binding="{Binding IsToday}"
+																						 Value="True">
+																				<Setter Property="TextColor"
+																						Value="{AppThemeBinding Light={StaticResource TodayTextLightColor},
+                                                     Dark={StaticResource TodayTextDarkColor}}" />
+																			</DataTrigger>
+																		</Label.Triggers>
 																	</Label>
 
 																	<!-- Аудитория -->
@@ -115,6 +160,15 @@
 																			<AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
 																							 Dark="{StaticResource LightOnDarkBackground}" />
 																		</Label.TextColor>
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label"
+																						 Binding="{Binding IsToday}"
+																						 Value="True">
+																				<Setter Property="TextColor"
+																						Value="{AppThemeBinding Light={StaticResource TodayTextLightColor},
+                                                     Dark={StaticResource TodayTextDarkColor}}" />
+																			</DataTrigger>
+																		</Label.Triggers>
 																	</Label>
 																</Grid>
 															</Frame>
