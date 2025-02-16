@@ -13,6 +13,15 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Регистрация конвертера -->
             <y:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <!-- Цвета для выделения сегодняшнего дня -->
+            <Color x:Key="TodayLightColor">#FFD700</Color>
+            <!-- Золотой цвет для светлой темы -->
+            <Color x:Key="TodayDarkColor">#FFA500</Color>
+            <!-- Оранжевый цвет для темной темы -->
+            <Color x:Key="TodayTextLightColor">#000000</Color>
+            <!-- Черный цвет для светлой темы -->
+            <Color x:Key="TodayTextDarkColor">#FFFFFF</Color>
+            <!-- Белый цвет для темной темы -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>
