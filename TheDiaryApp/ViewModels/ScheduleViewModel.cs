@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -10,13 +11,14 @@ namespace TheDiaryApp.ViewModels
     {
         private readonly ReportRepo _reportRepo;
         private StructuredSchedule _schedule;
+        private DateTime _currentTime;
         private bool _isRefreshing;
         private bool _isInternetAvailable = true;
 
         public ScheduleViewModel(ReportRepo reportRepo)
         {
             _reportRepo = reportRepo;
-
+            _currentTime = DateTime.Now;
             // Подписка на изменение состояния сети
             Connectivity.ConnectivityChanged += OnConnectivityChanged;
 
@@ -88,10 +90,72 @@ namespace TheDiaryApp.ViewModels
             }
 
             // Загрузите расписание для группы и подгруппы
-            Schedule = await _reportRepo.ReportAsync("Кск-24-1", 1); // Укажите группу и подгруппу
-
+            Schedule = await _reportRepo.ReportAsync("Кск-21-1", 1);
+            FilterScheduleByWeekType();
+            UpdateCurrentLesson(); // Добавляем вызов обновления текущей пары
             // Фильтруем расписание по типу недели
             FilterScheduleByWeekType();
+        }
+
+        private void UpdateCurrentLesson()
+        {
+            if (Schedule == null || Schedule.WeekData == null)
+                return;
+
+            var now = AdjustCurrentTime(DateTime.Now);
+
+            foreach (var week in Schedule.WeekData.Values)
+            {
+                foreach (var day in week)
+                {
+                    foreach (var lesson in day.Value)
+                    {
+                        lesson.IsCurrent = IsLessonCurrent(lesson, now);
+                    }
+                }
+            }
+
+            OnPropertyChanged(nameof(Schedule));
+        }
+
+        private DateTime AdjustCurrentTime(DateTime time)
+        {
+            // Корректировка времени согласно вашей логике
+            if (time.DayOfWeek == DayOfWeek.Saturday && time.Hour >= 21)
+                return time.AddDays(2);
+            if (time.DayOfWeek == DayOfWeek.Sunday)
+                return time.AddDays(1);
+            if (time.Hour >= 21)
+                return time.AddDays(1);
+            return time;
+        }
+
+        private bool IsLessonCurrent(Schedule lesson, DateTime currentTime)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(lesson.Time)) return false;
+
+                var timeParts = lesson.Time.Split('-');
+                if (timeParts.Length != 2) return false;
+
+                var lessonDay = GetDayOfWeek(lesson.DayOfWeek);
+                var currentDay = currentTime.DayOfWeek;
+
+                // Если день не совпадает
+                if (lessonDay != currentDay) return false;
+
+                var startTime = DateTime.ParseExact(timeParts[0].Trim(), "HH:mm", CultureInfo.InvariantCulture);
+                var endTime = DateTime.ParseExact(timeParts[1].Trim(), "HH:mm", CultureInfo.InvariantCulture);
+
+                var currentTimeOnly = currentTime.TimeOfDay;
+                return currentTimeOnly >= startTime.TimeOfDay &&
+                       currentTimeOnly <= endTime.TimeOfDay;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private async void LoadScheduleAsync()
@@ -108,6 +172,20 @@ namespace TheDiaryApp.ViewModels
                 // Выводим сообщение об отсутствии интернета
                 await Shell.Current.DisplayAlert("Внимание", "Нет интернета! Расписание может быть не актуальным.", "OK");
             }
+        }
+
+        private DayOfWeek GetDayOfWeek(string dayName)
+        {
+            return dayName switch
+            {
+                "Понедельник" => DayOfWeek.Monday,
+                "Вторник" => DayOfWeek.Tuesday,
+                "Среда" => DayOfWeek.Wednesday,
+                "Четверг" => DayOfWeek.Thursday,
+                "Пятница" => DayOfWeek.Friday,
+                "Суббота" => DayOfWeek.Saturday,
+                _ => DayOfWeek.Sunday
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

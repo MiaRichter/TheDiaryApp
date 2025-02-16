@@ -22,6 +22,15 @@
             <!-- Черный цвет для светлой темы -->
             <Color x:Key="TodayTextDarkColor">#FFFFFF</Color>
             <!-- Белый цвет для темной темы -->
+            <!-- Цвета для текущей пары -->
+            <Color x:Key="CurrentLessonLightColor">#4CAF50</Color>
+            <!-- Зеленый для светлой темы -->
+            <Color x:Key="CurrentLessonDarkColor">#388E3C</Color>
+            <!-- Темно-зеленый для темной темы -->
+            <Color x:Key="CurrentLessonTextLightColor">#FFFFFF</Color>
+            <!-- Белый текст -->
+            <Color x:Key="CurrentLessonTextDarkColor">#FFFFFF</Color>
+            <!-- Белый текст -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>

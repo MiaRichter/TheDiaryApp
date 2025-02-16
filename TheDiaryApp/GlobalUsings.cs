@@ -1,4 +1,3 @@
-global using Fonts;
 global using TheDiaryApp.Repositories;
 global using TheDiaryApp.Models;
 global using TheDiaryApp.Helpers;

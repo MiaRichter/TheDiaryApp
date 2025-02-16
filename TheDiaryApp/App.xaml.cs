@@ -4,13 +4,11 @@ namespace TheDiaryApp
 {
     public partial class App : Application
     {
-        private readonly BackgroundTaskScheduler _taskScheduler;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public App(BackgroundTaskScheduler taskScheduler)
+        public App()
         {
             InitializeComponent();
-            _taskScheduler = taskScheduler;
             MainPage = new AppShell();
         }
 
@@ -20,7 +18,6 @@ namespace TheDiaryApp
 
             // Запускаем фоновую задачу
             _cancellationTokenSource = new CancellationTokenSource();
-            await _taskScheduler.StartAsync(_cancellationTokenSource.Token);
         }
 
         protected override void OnSleep()
@@ -37,7 +34,6 @@ namespace TheDiaryApp
 
             // Перезапускаем фоновую задачу при возобновлении работы приложения
             _cancellationTokenSource = new CancellationTokenSource();
-            await _taskScheduler.StartAsync(_cancellationTokenSource.Token);
         }
     }
 }

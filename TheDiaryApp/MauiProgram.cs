@@ -32,8 +32,6 @@ public static class MauiProgram
 		builder.Services.AddSingleton<ExcelParser>();
 		builder.Services.AddSingleton<ReplacementParser>();
         builder.Services.AddSingleton<InvertedBoolConverter>();
-        builder.Services.AddSingleton<ScheduleBackgroundTask>();
-        builder.Services.AddSingleton<BackgroundTaskScheduler>();
         builder.Services.AddSingleton<ScheduleViewModel>();
         builder.Services.AddSingleton<MainPage>();
 
