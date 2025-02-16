@@ -35,6 +35,7 @@ namespace TheDiaryApp.Repositories
                     // Форматируем месяц, чтобы он был в формате "02"
                     string month = now.Month.ToString("D2");
                     // Форматируем год, чтобы он был в формате "25"
+                    
                     int year = now.Year % 100;
                     string endDate = now.AddDays(2).Day.ToString("D2");
                     if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday) //если сегодня воскресенье то покажи расписание с понедельника по среду
@@ -47,7 +48,7 @@ namespace TheDiaryApp.Repositories
                         day = now.AddDays(-1).Day.ToString("D2");
                         endDate = now.AddDays(1).Day.ToString("D2");
                     }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour >= 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour >= 21) // если сегодня среда и время 21:00 и более то покажи расписание с четверга по субботу
                     {
                         day = now.AddDays(1).Day.ToString("D2");
                         endDate = now.AddDays(3).Day.ToString("D2");
@@ -62,14 +63,15 @@ namespace TheDiaryApp.Repositories
                         day = now.AddDays(-2).Day.ToString("D2");
                         endDate = now.AddDays(0).Day.ToString("D2");
                     }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour >= 21) // если сегодня суббота то покажи расписание с понедельника по среду
+                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour >= 21) // если сегодня суббота и время 21:00 и более то покажи расписание с понедельника по среду
                     {
                         day = now.AddDays(2).Day.ToString("D2");
                         endDate = now.AddDays(4).Day.ToString("D2");
                     }
 
-                    string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{endDate}.{month}.{year}.xlsx?forcedownload=1";
-                    await DownloadFileAsync(query, replacementsFilePath);
+                    //string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{endDate}.{month}.{year}.xlsx?forcedownload=1";
+                    string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/13.02.25-15.02.25.xlsx?forcedownload=1";
+                    //await DownloadFileAsync(query, replacementsFilePath);
                 }
             }
             else
@@ -129,45 +131,33 @@ namespace TheDiaryApp.Repositories
 
                     if (dayReplacements.Any())
                     {
-                        // Очищаем список пар на этот день
+                        // Удаляем пары, помеченные на удаление
+                        var removals = dayReplacements
+                            .Where(r => r.Value.Subject == "REMOVE_FLAG")
+                            .Select(r => r.Value.LessonNumber)
+                            .ToList();
 
-                        // Добавляем замены
+                        daySchedules.RemoveAll(schedule => removals.Contains(schedule.LessonNumber));
+
+                        // Применяем замены
                         foreach (var replacement in dayReplacements.Values)
                         {
-                            var lessonreplays = -1;
-                            for (var i = 0; i < daySchedules.Count; i++)
+                            if (replacement.Subject == "REMOVE_FLAG")
+                                continue; // Пропускаем удаленные пары
+
+                            var existing = daySchedules.FirstOrDefault(s => s.LessonNumber == replacement.LessonNumber);
+                            if (existing != null)
                             {
-                                if (daySchedules[i].LessonNumber == replacement.LessonNumber)
-                                {
-                                    lessonreplays = i;
-                                    continue;
-                                }
-                            }
-                            if (lessonreplays > -1)
-                            {
-                                daySchedules[lessonreplays].DayOfWeek = dayOfWeek;
-                                daySchedules[lessonreplays].LessonNumber = replacement.LessonNumber;
-                                daySchedules[lessonreplays].Subject = replacement.Subject;
-                                daySchedules[lessonreplays].Teacher = replacement.Teacher;
-                                daySchedules[lessonreplays].Room = replacement.Room;
-                                daySchedules[lessonreplays].GroupName = replacement.GroupName;
-                                daySchedules[lessonreplays].SubGroup = replacement.SubGroup;
-                                daySchedules[lessonreplays].Time = GetLessonTime(dayOfWeek, replacement.LessonNumber);
+                                // Обновляем существующую пару
+                                existing.Subject = replacement.Subject;
+                                existing.Teacher = replacement.Teacher;
+                                existing.Room = replacement.Room;
+                                existing.Time = replacement.Time;
                             }
                             else
                             {
-                                // Добавляем замену в список
-                                daySchedules.Add(new Schedule
-                                {
-                                    DayOfWeek = dayOfWeek,
-                                    LessonNumber = replacement.LessonNumber,
-                                    Subject = replacement.Subject,
-                                    Teacher = replacement.Teacher,
-                                    Room = replacement.Room,
-                                    GroupName = replacement.GroupName,
-                                    SubGroup = replacement.SubGroup,
-                                    Time = GetLessonTime(dayOfWeek, replacement.LessonNumber)
-                                });
+                                // Добавляем новую пару
+                                daySchedules.Add(replacement);
                             }
                         }
 

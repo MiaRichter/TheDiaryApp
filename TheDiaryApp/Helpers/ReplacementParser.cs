@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using OfficeOpenXml;
 using TheDiaryApp.Models;
 
 namespace TheDiaryApp.Helpers
@@ -61,7 +62,17 @@ namespace TheDiaryApp.Helpers
                     if (string.IsNullOrWhiteSpace(lessonContent))
                         continue;
                     if (lessonContent.Contains("------------"))
-                        rawlesson++;
+                    {
+                        // Маркируем пару на удаление
+                        replacements[$"{dayOfWeek}_{lessonNumber}"] = new Schedule
+                        {
+                            DayOfWeek = dayOfWeek,
+                            LessonNumber = lessonNumber,
+                            Subject = "REMOVE_FLAG",
+                            GroupName = targetGroup
+                        };
+                        continue;
+                    }
                     var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(p => p.Trim()).ToArray();
 
@@ -73,7 +84,8 @@ namespace TheDiaryApp.Helpers
                         Teacher = parts.Length > 1 + rawlesson ? parts[1 + rawlesson] : "",
                         Room = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], "  ", "") : "",
                         GroupName = targetGroup,
-                        SubGroup = 1
+                        SubGroup = 1,
+                        Time = GetLessonTime(dayOfWeek, lessonNumber)
                     };
                     rawlesson = 0;
                     var key = $"{dayOfWeek}_{lessonNumber}";
@@ -83,6 +95,37 @@ namespace TheDiaryApp.Helpers
 
             return replacements;
         }
+
+        public string GetLessonTime(string dayOfWeek, int lessonNumber)
+        {
+            if (dayOfWeek == "Суббота")
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "11:50-13:20",
+                    4 => "13:30-15:00",
+                    5 => "15:10-16:40",
+                    6 => "16:50-18:20",
+                    _ => "Неизвестное время"
+                };
+            }
+            else
+            {
+                return lessonNumber switch
+                {
+                    1 => "08:30-10:00",
+                    2 => "10:10-11:40",
+                    3 => "12:20-13:50",
+                    4 => "14:20-15:50",
+                    5 => "16:00-17:30",
+                    6 => "17:40-19:10",
+                    _ => "Неизвестное время"
+                };
+            }
+        }
+
         string ExtractSubstring(string input, string startChar, string endChar)
         {
             int startIndex = input.IndexOf(startChar);
