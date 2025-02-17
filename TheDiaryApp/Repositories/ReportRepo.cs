@@ -20,7 +20,6 @@ namespace TheDiaryApp.Repositories
             // Пути к файлам
             await InitializeFilesAsync();
             string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
-            string copymainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
             string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
 
             // Проверка наличия интернета 2510358 2510356 1936751 2510365

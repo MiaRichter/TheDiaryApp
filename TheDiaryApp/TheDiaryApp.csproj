@@ -50,7 +50,6 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
@@ -67,6 +66,16 @@
 
 	<ItemGroup>
 	  <Compile Remove="Pages\MainPage.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Remove="Pages\SettingsPage.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Pages\SettingsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -89,7 +98,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Pages\" />
 	  <Folder Include="Resources\Images\" />
 	</ItemGroup>
 
