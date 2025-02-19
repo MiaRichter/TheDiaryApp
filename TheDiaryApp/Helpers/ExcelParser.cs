@@ -71,33 +71,66 @@ namespace TheDiaryApp.Helpers
                         // Проверка жирного шрифта (номер пары)
                         if (lessonCell.Style.Font.Bold && int.TryParse(lessonCell.Text.Trim(), out int lessonNumber))
                         {
-                            // Предмет через 1 столбец
-                            var subject = worksheet.Cells[rowIdx, dayCol + 1].Text.Trim();
+                            // Предметы для обеих подгрупп
+                            var subject1 = worksheet.Cells[rowIdx, dayCol + 1].Text.Trim(); // Левая часть
+                            var subject2 = worksheet.Cells[rowIdx, dayCol + 3].Text.Trim(); // Правая часть
 
-                            // Преподаватель и аудитория через 1 строку и 4 столбца
-                            if (rowIdx + 1 <= totalRows)
+                            // Преподаватели и аудитории
+                            var teacher1 = worksheet.Cells[rowIdx + 1, dayCol + 1].Text.Trim();
+                            var room1 = worksheet.Cells[rowIdx + 1, dayCol + 2].Text.Trim();
+
+                            var teacher2 = worksheet.Cells[rowIdx + 1, dayCol + 3].Text.Trim();
+                            var room2 = worksheet.Cells[rowIdx + 1, dayCol + 4].Text.Trim();
+
+                            bool isCommonPair = string.IsNullOrEmpty(teacher2)
+                                                && !string.IsNullOrEmpty(room2);
+
+                            // Выбираем пару в зависимости от подгруппы
+                            string selectedSubject = "";
+                            string selectedTeacher = "";
+                            string selectedRoom = "";
+
+                            if (isCommonPair)
                             {
-                                var teacher = worksheet.Cells[rowIdx + 1, dayCol + 1].Text.Trim();
-                                var room = worksheet.Cells[rowIdx + 1, dayCol + 4].Text.Trim();
-
-                                if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(teacher))
+                                // Общая пара для обеих подгрупп
+                                selectedSubject = subject1;
+                                selectedTeacher = teacher1;
+                                selectedRoom = room2;
+                            }
+                            else
+                            {
+                                // Отдельные пары для каждой подгруппы
+                                if (subGroup == 1)
                                 {
-                                    // Определение времени проведения пары
-                                    string time = GetLessonTime(day.Key, lessonNumber);
-
-                                    result.WeekData[currentWeekType][day.Key].Add(new Schedule
-                                    {
-                                        GroupName = groupName,
-                                        SubGroup = subGroup,
-                                        WeekType = currentWeekType,
-                                        DayOfWeek = day.Key,
-                                        LessonNumber = lessonNumber,
-                                        Subject = subject,
-                                        Teacher = teacher,
-                                        Room = room,
-                                        Time = time
-                                    });
+                                    selectedSubject = !string.IsNullOrEmpty(subject1) ? subject1 : "";
+                                    selectedTeacher = !string.IsNullOrEmpty(teacher1) ? teacher1 : "";
+                                    selectedRoom = !string.IsNullOrEmpty(room1) ? room1 : "";
                                 }
+                                else if (subGroup == 2)
+                                {
+                                    selectedSubject = !string.IsNullOrEmpty(subject2) ? subject2 : "";
+                                    selectedTeacher = !string.IsNullOrEmpty(teacher2) ? teacher2 : "";
+                                    selectedRoom = !string.IsNullOrEmpty(room2) ? room2 : "";
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(selectedSubject) && !string.IsNullOrEmpty(selectedTeacher))
+                            {
+                                // Определение времени проведения пары
+                                string time = GetLessonTime(day.Key, lessonNumber);
+
+                                result.WeekData[currentWeekType][day.Key].Add(new Schedule
+                                {
+                                    GroupName = groupName,
+                                    SubGroup = subGroup,
+                                    WeekType = currentWeekType,
+                                    DayOfWeek = day.Key,
+                                    LessonNumber = lessonNumber,
+                                    Subject = selectedSubject,
+                                    Teacher = selectedTeacher,
+                                    Room = selectedRoom,
+                                    Time = time
+                                });
                             }
                         }
                     }
