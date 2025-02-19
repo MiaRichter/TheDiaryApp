@@ -64,6 +64,10 @@ namespace TheDiaryApp.Helpers
                     Schedule schedule;
                     if (lessonContent.Contains("1.") || lessonContent.Contains("2."))
                     {
+                        if ((!lessonContent.Contains("2.") && subGroup == 2) || (!lessonContent.Contains("1.") && subGroup == 1))
+                            continue;
+                        if (lessonContent.Contains("1.") && subGroup == 2)
+                            rawlesson += 2;
                         if (lessonContent.Contains("------------"))
                         {
                             // Маркируем пару на удаление

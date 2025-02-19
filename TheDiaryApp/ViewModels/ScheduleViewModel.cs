@@ -88,6 +88,7 @@ namespace TheDiaryApp.ViewModels
             }
 
             // Загрузите расписание для группы и подгруппы
+
             Schedule = await _reportRepo.ReportAsync("КсК-21-1", 1); // Укажите группу и подгруппу
 
             // Фильтруем расписание по типу недели
