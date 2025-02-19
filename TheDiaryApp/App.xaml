@@ -14,9 +14,9 @@
             <!-- Регистрация конвертера -->
             <y:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <!-- Цвета для выделения сегодняшнего дня -->
-            <Color x:Key="TodayLightColor">#FFD700</Color>
+            <Color x:Key="TodayLightColor">#3d9f8d</Color>
             <!-- Золотой цвет для светлой темы -->
-            <Color x:Key="TodayDarkColor">#FFA500</Color>
+            <Color x:Key="TodayDarkColor">#46436e</Color>
             <!-- Оранжевый цвет для темной темы -->
             <Color x:Key="TodayTextLightColor">#000000</Color>
             <!-- Черный цвет для светлой темы -->

@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Networking;
+using Newtonsoft.Json;
 
 namespace TheDiaryApp.ViewModels
 {
@@ -16,7 +19,9 @@ namespace TheDiaryApp.ViewModels
         public ScheduleViewModel(ReportRepo reportRepo)
         {
             _reportRepo = reportRepo;
-
+            // Пытаемся сразу загрузить локальные данные
+            var local = _reportRepo.LoadLocalSchedule();
+            if (local != null) Schedule = local;
             // Подписка на изменение состояния сети
             Connectivity.ConnectivityChanged += OnConnectivityChanged;
 
@@ -78,21 +83,60 @@ namespace TheDiaryApp.ViewModels
 
         private async Task LoadSchedule()
         {
-            var currentNetworkAccess = Connectivity.NetworkAccess;
-            IsInternetAvailable = currentNetworkAccess == NetworkAccess.Internet;
+            // Проверяем доступность интернета
+            bool isInternetAvailable = await CheckInternetAccessAsync();
+            IsInternetAvailable = isInternetAvailable;
 
-            if (!IsInternetAvailable)
+            if (!isInternetAvailable)
             {
+                SaveLocalCopy(Schedule);
                 // Выводим сообщение об отсутствии интернета
                 await Shell.Current.DisplayAlert("Внимание", "Нет интернета! Расписание может быть не актуальным.", "OK");
+                return; // Прерываем загрузку расписания
             }
 
-            // Загрузите расписание для группы и подгруппы
-
-            Schedule = await _reportRepo.ReportAsync("КсК-21-1", 1); // Укажите группу и подгруппу
+            // Загружаем сохраненные настройки
+            string group = Preferences.Get("Group", "КсК-21-1"); // Значение по умолчанию
+            int subGroup = Preferences.Get("SubGroup", 1); // Значение по умолчанию
+                                                           // Пытаемся загрузить локальную копию
+            var localSchedule = _reportRepo.LoadLocalSchedule();
+            if (localSchedule != null)
+            {
+                Schedule = localSchedule;
+                FilterScheduleByWeekType();
+            }
+            // Загружаем расписание для сохраненной группы и подгруппы
+            Schedule = await _reportRepo.ReportAsync(group, subGroup);
 
             // Фильтруем расписание по типу недели
             FilterScheduleByWeekType();
+        }
+
+        private void SaveLocalCopy(StructuredSchedule schedule)
+        {
+            string path = Path.Combine(FileSystem.AppDataDirectory, "offline_schedule.json");
+            File.WriteAllText(path, JsonConvert.SerializeObject(schedule));
+        }
+
+        private async Task<bool> CheckInternetAccessAsync()
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    // Добавляем задержку перед проверкой
+                    await Task.Delay(1000); // 1 секунда
+
+                    // Пытаемся выполнить запрос к надежному ресурсу
+                    var response = await httpClient.GetAsync("https://www.google.com");
+                    return response.IsSuccessStatusCode; // Если ответ успешный, интернет доступен
+                }
+            }
+            catch
+            {
+                // Если произошла ошибка, интернет недоступен
+                return false;
+            }
         }
 
         private async void LoadScheduleAsync()
@@ -102,9 +146,11 @@ namespace TheDiaryApp.ViewModels
 
         private async void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            IsInternetAvailable = e.NetworkAccess == NetworkAccess.Internet;
+            // Проверяем доступность интернета
+            bool isInternetAvailable = await CheckInternetAccessAsync();
+            IsInternetAvailable = isInternetAvailable;
 
-            if (!IsInternetAvailable)
+            if (!isInternetAvailable)
             {
                 // Выводим сообщение об отсутствии интернета
                 await Shell.Current.DisplayAlert("Внимание", "Нет интернета! Расписание может быть не актуальным.", "OK");
