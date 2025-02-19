@@ -34,7 +34,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<InvertedBoolConverter>();
         builder.Services.AddSingleton<ScheduleViewModel>();
         builder.Services.AddSingleton<MainPage>();
-
         return builder.Build();
 	}
 }

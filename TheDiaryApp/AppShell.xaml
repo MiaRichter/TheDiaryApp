@@ -12,5 +12,17 @@
         Title="Расписание"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+    <ShellContent
+    Title="Расписание"
+    ContentTemplate="{DataTemplate local:MainPage}"
+    Route="MainPage" />
+    <ShellContent
+    Title="Расписание"
+    ContentTemplate="{DataTemplate local:MainPage}"
+    Route="MainPage" />
+    <ShellContent
+    Title="Расписание"
+    ContentTemplate="{DataTemplate local:MainPage}"
+    Route="MainPage" />
 
 </Shell>
