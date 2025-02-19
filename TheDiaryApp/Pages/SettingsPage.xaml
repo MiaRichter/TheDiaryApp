@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TheDiaryApp.Pages.SettingsPage"
+             Title="SettingsPage">
+    <VerticalStackLayout Spacing="5">
+        <Label Text="Первая метка" TextColor="Red"  />
+        <Label Text="Вторая метка" TextColor="Blue" />
+        <Label Text="Третья метка" TextColor="Green" />
+    </VerticalStackLayout>
+</ContentPage>

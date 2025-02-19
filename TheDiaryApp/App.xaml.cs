@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TheDiaryApp.Pages;
 
 namespace TheDiaryApp
 {
