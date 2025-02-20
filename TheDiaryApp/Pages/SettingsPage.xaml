@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="TheDiaryApp.Pages.SettingsPage"
              Title="Настройки">
     <VerticalStackLayout Spacing="10" Padding="20">
@@ -11,8 +11,24 @@
         <!-- Выбор подгруппы -->
         <Label Text="Подгруппа:" FontSize="16" />
         <HorizontalStackLayout Spacing="10">
-            <Button Text="1" Command="{Binding SaveCommand}" CommandParameter="1" />
-            <Button Text="2" Command="{Binding SaveCommand}" CommandParameter="2" />
+            <Button Text="1" Command="{Binding SaveCommand}" CommandParameter="1">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding ActiveSubGroup}"
+                                 Value="1">
+                        <Setter Property="BackgroundColor" Value="LightGreen" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button Text="2" Command="{Binding SaveCommand}" CommandParameter="2">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding ActiveSubGroup}"
+                                 Value="2">
+                        <Setter Property="BackgroundColor" Value="LightGreen" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
         </HorizontalStackLayout>
 
         <!-- Кнопка "Сохранить" -->

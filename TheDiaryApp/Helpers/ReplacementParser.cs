@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using OfficeOpenXml;
 using TheDiaryApp.Models;
+using System.Text.RegularExpressions;
 
 namespace TheDiaryApp.Helpers
 {
@@ -34,6 +35,7 @@ namespace TheDiaryApp.Helpers
                 int lastCol = worksheet.Dimension.End.Column;
                 var dayOfWeek = "";
                 var rawlesson = 0;
+
                 // Находим столбец с нужной группой
                 int groupColumn = -1;
                 for (int col = firstCol; col <= lastCol; col++)
@@ -53,21 +55,25 @@ namespace TheDiaryApp.Helpers
                 {
                     if (worksheet.Cells[row, firstCol].Text.Trim() != "")
                         dayOfWeek = worksheet.Cells[row, firstCol].Text.Trim();
+
                     var lessonNumberText = worksheet.Cells[row, firstCol + 2].Text.Trim();
 
                     if (!int.TryParse(lessonNumberText, out int lessonNumber) || string.IsNullOrWhiteSpace(dayOfWeek))
                         continue;
 
-                    var lessonContent = worksheet.Cells[row, groupColumn].Text.Trim();
+                    var lessonContent = CleanString(worksheet.Cells[row, groupColumn].Text);
                     if (string.IsNullOrWhiteSpace(lessonContent))
                         continue;
+
                     Schedule schedule;
                     if (lessonContent.Contains("1.") || lessonContent.Contains("2."))
                     {
                         if ((!lessonContent.Contains("2.") && subGroup == 2) || (!lessonContent.Contains("1.") && subGroup == 1))
                             continue;
+
                         if (lessonContent.Contains("1.") && subGroup == 2)
                             rawlesson += 2;
+
                         if (lessonContent.Contains("------------"))
                         {
                             // Маркируем пару на удаление
@@ -80,6 +86,7 @@ namespace TheDiaryApp.Helpers
                             };
                             continue;
                         }
+
                         var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
                             .Select(p => p.Trim()).ToArray();
 
@@ -87,7 +94,7 @@ namespace TheDiaryApp.Helpers
                         {
                             DayOfWeek = dayOfWeek,
                             LessonNumber = lessonNumber,
-                            Subject = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], subGroup+". ", "  ") : "",
+                            Subject = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], $"{subGroup}. ", "  ") : "",
                             Teacher = parts.Length > 1 + rawlesson ? parts[1 + rawlesson] : "",
                             Room = parts.Length > 0 + rawlesson ? ExtractSubstring(parts[0 + rawlesson], "  ", "") : "",
                             GroupName = targetGroup,
@@ -109,6 +116,7 @@ namespace TheDiaryApp.Helpers
                             };
                             continue;
                         }
+
                         var parts = lessonContent.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries)
                             .Select(p => p.Trim()).ToArray();
 
@@ -163,22 +171,53 @@ namespace TheDiaryApp.Helpers
             }
         }
 
+        private string CleanString(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            // Удаляем лишние пробелы и точки в начале и конце строки
+            input = input.Trim();
+
+            // Удаляем точку в начале строки, если она есть
+            if (input.StartsWith("."))
+                input = input.Substring(1).Trim();
+
+            return input;
+        }
+
         string ExtractSubstring(string input, string startChar, string endChar)
         {
-            int startIndex = input.IndexOf(startChar);
-            int endIndex = 0;
-            if (endChar == "")
-                endIndex = input.IndexOf(endChar, startIndex + 1) + 5;
-            else
-                endIndex = input.IndexOf(endChar, startIndex + 1);
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
 
-            if (startIndex != -1 && endIndex != -1 && endIndex > startIndex)
+            int startIndex = input.IndexOf(startChar);
+            if (startIndex == -1)
+                return string.Empty; // Если startChar не найден, возвращаем пустую строку
+
+            // Смещаем startIndex на длину startChar
+            startIndex += startChar.Length;
+
+            int endIndex;
+            if (string.IsNullOrEmpty(endChar))
             {
-                return input.Substring(startIndex + 1, endIndex - startIndex - 1);
+                // Если endChar не указан, берем всю строку до конца
+                endIndex = input.Length;
+            }
+            else
+            {
+                // Ищем endChar после startIndex
+                endIndex = input.IndexOf(endChar, startIndex);
+                if (endIndex == -1)
+                    endIndex = input.Length; // Если endChar не найден, берем всю строку до конца
             }
 
-            return string.Empty; // Если не найдено
+            // Проверяем, что endIndex больше startIndex
+            if (endIndex <= startIndex)
+                return string.Empty;
+
+            // Извлекаем подстроку
+            return input.Substring(startIndex, endIndex - startIndex).Trim();
         }
     }
-
 }
