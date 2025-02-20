@@ -103,7 +103,6 @@ namespace TheDiaryApp.ViewModels
             if (localSchedule != null)
             {
                 Schedule = localSchedule;
-                FilterScheduleByWeekType();
             }
             // Загружаем расписание для сохраненной группы и подгруппы
             Schedule = await _reportRepo.ReportAsync(group, subGroup);

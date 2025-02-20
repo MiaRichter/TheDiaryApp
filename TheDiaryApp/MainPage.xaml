@@ -53,47 +53,45 @@
                                                             <Frame Padding="10" CornerRadius="5" Margin="10,0,10,5">
                                                                 <Frame.BackgroundColor>
                                                                     <AppThemeBinding Light="{StaticResource LightSecondaryBackground}"
-                                     Dark="{StaticResource DarkSecondaryBackground}" />
+                          Dark="{StaticResource DarkSecondaryBackground}" />
                                                                 </Frame.BackgroundColor>
                                                                 <Frame.Triggers>
                                                                     <DataTrigger TargetType="Frame"
-                                 Binding="{Binding IsToday}"
-                                 Value="True">
+                     Binding="{Binding IsToday}"
+                     Value="True">
                                                                         <Setter Property="BackgroundColor"
-                                Value="{AppThemeBinding Light={StaticResource TodayLightColor},
-                                                        Dark={StaticResource TodayDarkColor}}" />
+                    Value="{AppThemeBinding Light={StaticResource TodayLightColor},
+                                            Dark={StaticResource TodayDarkColor}}" />
                                                                     </DataTrigger>
                                                                 </Frame.Triggers>
-
                                                                 <Grid Margin="5" RowSpacing="5" ColumnDefinitions="1*, 2*, 1*">
                                                                     <!-- Номер пары -->
                                                                     <Label Text="{Binding LessonNumber}"
-                           FontAttributes="Bold"
-                           FontSize="16"
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center"
-                           Grid.Column="0" />
+               FontAttributes="Bold"
+               FontSize="16"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Grid.Column="0" />
 
                                                                     <!-- Предмет и преподаватель -->
                                                                     <StackLayout Grid.Column="1" Orientation="Vertical" HorizontalOptions="Center">
                                                                         <Label Text="{Binding Subject}"
-                               FontSize="14"
-                               HorizontalOptions="Center" />
+                   FontSize="14"
+                   HorizontalOptions="Center" />
                                                                         <Label Text="{Binding Teacher}"
-                               FontSize="12"
-                               HorizontalOptions="Center" />
+                   FontSize="12"
+                   HorizontalOptions="Center" />
                                                                     </StackLayout>
 
                                                                     <!-- Кабинет и время -->
                                                                     <StackLayout Grid.Column="2" Orientation="Vertical" HorizontalOptions="Center">
                                                                         <Label Text="{Binding Room}"
-                               FontSize="12"
-                               HorizontalOptions="Center" />
+                   FontSize="12"
+                   HorizontalOptions="Center" />
                                                                         <Label Text="{Binding Time}"
-                               FontSize="12"
-                               HorizontalOptions="Center"
-                               Margin="0,5,0,0" />
-                                                                        <!-- Увеличено расстояние между кабинетом и временем -->
+                   FontSize="12"
+                   HorizontalOptions="Center"
+                   Margin="0,5,0,0" />
                                                                     </StackLayout>
                                                                 </Grid>
                                                             </Frame>
