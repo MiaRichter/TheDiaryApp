@@ -14,7 +14,19 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
     <ShellContent
-    Title="Настройки"
-    ContentTemplate="{DataTemplate pages:SettingsPage}"
-    Route="SettingsPage" />
+Title="Расписание преподавателей"
+ContentTemplate="{DataTemplate pages:TeacherIsSchedule}"
+Route="TeacherIsSchedule" />
+    <ShellContent
+Title="Гайды"
+ContentTemplate="{DataTemplate pages:GuidePage}"
+Route="GuidePage" />
+    <ShellContent
+Title="Настройки"
+ContentTemplate="{DataTemplate pages:SettingsPage}"
+Route="SettingsPage" />
+    <ShellContent
+Title="О нас"
+ContentTemplate="{DataTemplate pages:AboutPage}"
+Route="AboutPage" />
 </Shell>
