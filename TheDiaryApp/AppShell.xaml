@@ -7,16 +7,20 @@
     xmlns:pages="clr-namespace:TheDiaryApp.Pages"
     xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
     Shell.FlyoutBehavior="Flyout"
-    Title="TheDiaryApp">
+    Title="Журнал">
 
     <ShellContent
-        Title="Расписание"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    Title="Расписание"
+    ContentTemplate="{DataTemplate local:MainPage}"
+    Route="MainPage" />
     <ShellContent
 Title="Расписание преподавателей"
 ContentTemplate="{DataTemplate pages:TeacherIsSchedule}"
 Route="TeacherIsSchedule" />
+    <ShellContent
+Title="Расписание перемен"
+ContentTemplate="{DataTemplate pages:BreakPage}"
+Route="BreakPage" />
     <ShellContent
 Title="Гайды"
 ContentTemplate="{DataTemplate pages:GuidePage}"
@@ -26,7 +30,7 @@ Title="Настройки"
 ContentTemplate="{DataTemplate pages:SettingsPage}"
 Route="SettingsPage" />
     <ShellContent
-Title="О нас"
+Title="О проекте"
 ContentTemplate="{DataTemplate pages:AboutPage}"
 Route="AboutPage" />
 </Shell>

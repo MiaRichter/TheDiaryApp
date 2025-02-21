@@ -2,11 +2,103 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TheDiaryApp.Pages.GuidePage"
-             Title="GuidePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Гайды для первокурсников"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+
+            <!-- Заголовок -->
+            <Label Text="Гайды для первокурсников"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="{AppThemeBinding Light=#333333, Dark=White}" />
+
+            <!-- Карточка 1: Адаптация -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"
+                   BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Адаптация в университете"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}" />
+                    <Label Text="Советы по адаптации к новому окружению, расписанию и учебному процессу."
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#555555, Dark=#CCCCCC}" />
+                    <Button Text="Читать"
+                            BackgroundColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}"
+                            TextColor="White"
+                            HorizontalOptions="Start"
+                            Clicked="OnAdaptationGuideClicked" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Карточка 2: Учебный процесс -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"
+                   BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Учебный процесс"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}" />
+                    <Label Text="Как эффективно учиться, сдавать экзамены и работать с преподавателями."
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#555555, Dark=#CCCCCC}" />
+                    <Button Text="Читать"
+                            BackgroundColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}"
+                            TextColor="White"
+                            HorizontalOptions="Start"
+                            Clicked="OnStudyGuideClicked" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Карточка 3: Общежитие -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"
+                   BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Жизнь в общежитии"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}" />
+                    <Label Text="Правила проживания, советы по общению с соседями и организации быта."
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#555555, Dark=#CCCCCC}" />
+                    <Button Text="Читать"
+                            BackgroundColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}"
+                            TextColor="White"
+                            HorizontalOptions="Start"
+                            Clicked="OnDormitoryGuideClicked" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Карточка 4: Внеучебная деятельность -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"
+                   BorderColor="{AppThemeBinding Light=#DDDDDD, Dark=#444444}"
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Внеучебная деятельность"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}" />
+                    <Label Text="Кружки, секции, мероприятия и другие возможности для самореализации."
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#555555, Dark=#CCCCCC}" />
+                    <Button Text="Читать"
+                            BackgroundColor="{AppThemeBinding Light=#007BFF, Dark=#1E90FF}"
+                            TextColor="White"
+                            HorizontalOptions="Start"
+                            Clicked="OnActivitiesGuideClicked" />
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
