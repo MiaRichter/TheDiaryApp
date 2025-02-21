@@ -5,36 +5,29 @@ namespace TheDiaryApp
 {
     public partial class App : Application
     {
-        private CancellationTokenSource _cancellationTokenSource;
-
         public App()
         {
             InitializeComponent();
+            // Загрузка сохраненной темы
+            var savedTheme = Preferences.Get("SelectedTheme", "Auto");
+            ApplyTheme(savedTheme);
             MainPage = new AppShell();
         }
 
-        protected override async void OnStart()
+        private void ApplyTheme(string theme)
         {
-            base.OnStart();
-
-            // Запускаем фоновую задачу
-            _cancellationTokenSource = new CancellationTokenSource();
-        }
-
-        protected override void OnSleep()
-        {
-            base.OnSleep();
-
-            // Останавливаем фоновую задачу при сворачивании приложения
-            _cancellationTokenSource?.Cancel();
-        }
-
-        protected override async void OnResume()
-        {
-            base.OnResume();
-
-            // Перезапускаем фоновую задачу при возобновлении работы приложения
-            _cancellationTokenSource = new CancellationTokenSource();
+            switch (theme)
+            {
+                case "Light":
+                    Application.Current.UserAppTheme = AppTheme.Light;
+                    break;
+                case "Dark":
+                    Application.Current.UserAppTheme = AppTheme.Dark;
+                    break;
+                case "Auto":
+                    Application.Current.UserAppTheme = AppTheme.Unspecified;
+                    break;
+            }
         }
     }
 }

@@ -103,7 +103,6 @@ namespace TheDiaryApp.ViewModels
             if (localSchedule != null)
             {
                 Schedule = localSchedule;
-                FilterScheduleByWeekType();
             }
             // Загружаем расписание для сохраненной группы и подгруппы
             Schedule = await _reportRepo.ReportAsync(group, subGroup);
@@ -210,7 +209,7 @@ namespace TheDiaryApp.ViewModels
             // Сдвигаем текущий день недели в зависимости от условий
             if (now.DayOfWeek == DayOfWeek.Saturday && now.Hour >= 21) now = now.AddDays(2); // Если суббота и время 21:00 или позже, сдвигаем на понедельник
             if (now.DayOfWeek == DayOfWeek.Sunday) now = now.AddDays(1); // Если воскресенье, сдвигаем на понедельник
-            if (now.Hour >= 21) now = now.AddDays(1); // Если 21:00 то смени отображение текущего дня на следующий
+            if (now.Hour >= 21) now = now.AddDays(1); // Если 21:00, сдвигаем на следующий день
 
             // Получаем текущий день недели после сдвига
             string today = now.DayOfWeek switch
@@ -227,6 +226,18 @@ namespace TheDiaryApp.ViewModels
             if (today == null)
                 return;
 
+            // Сбрасываем флаг IsToday для всех записей
+            foreach (var week in Schedule.WeekData.Values)
+            {
+                foreach (var day in week.Values)
+                {
+                    foreach (var schedule in day)
+                    {
+                        schedule.IsToday = false;
+                    }
+                }
+            }
+
             // Устанавливаем флаг IsToday для сегодняшнего дня
             foreach (var week in Schedule.WeekData.Values)
             {
@@ -235,6 +246,7 @@ namespace TheDiaryApp.ViewModels
                     foreach (var schedule in week[today])
                     {
                         schedule.IsToday = true;
+                        Console.WriteLine($"Установлен IsToday для: {schedule.Subject} (Пара {schedule.LessonNumber})");
                     }
                 }
             }
