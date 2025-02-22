@@ -1,16 +1,19 @@
 ﻿using OfficeOpenXml;
 using TheDiaryApp.Models;
-using System.IO.MemoryMappedFiles;
-using DocumentFormat.OpenXml.Bibliography;
+using System.Collections.Generic;
+using System.IO;
 
 namespace TheDiaryApp.Helpers
 {
     public class TeacherParser
     {
-
         public StructuredSchedule ParseTeacher(string filePath)
         {
-            Schedule schedule;
+            var result = new StructuredSchedule
+            {
+                WeekData = new Dictionary<string, Dictionary<string, List<Schedule>>>()
+            };
+
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // Указываем контекст лицензии для использования EPPlus
 
             using (var package = new ExcelPackage(new FileInfo(filePath)))
@@ -22,61 +25,41 @@ namespace TheDiaryApp.Helpers
                 // Перебираем строки, начиная со второй (первая — заголовки)
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    for (int col = 1; col <= columnCount; col++)
+                    // Получаем данные из строки
+                    string dayOfWeek = worksheet.Cells[row, 1].Text; // День недели
+                    int lessonNumber = int.TryParse(worksheet.Cells[row, 2].Text, out int lessonNum) ? lessonNum : 0; // Номер пары
+                    string subject = worksheet.Cells[row, 3].Text; // Предмет
+                    string teacher = worksheet.Cells[row, 4].Text; // Преподаватель
+                    string room = worksheet.Cells[row, 5].Text; // Аудитория
+                    string time = worksheet.Cells[row, 6].Text; // Время пары
+
+                    // Создаем объект Schedule
+                    var schedule = new Schedule
                     {
-                        var cellValue = worksheet.Cells[row, col].Text; // Получаем текст из ячейки
+                        DayOfWeek = dayOfWeek,
+                        LessonNumber = lessonNumber,
+                        Subject = subject,
+                        Teacher = teacher,
+                        Room = room,
+                        Time = time
+                    };
 
-                       // if (cellValue.Contains( StringComparison.OrdinalIgnoreCase))
-                       // {
-                            schedule = new Schedule
-                            {
-                                DayOfWeek = worksheet.Cells[row, 1].Text, // Предполагаем, что первый столбец - день недели
-                                LessonNumber = int.TryParse(worksheet.Cells[row, 2].Text, out int lessonNum) ? lessonNum : 0, // Второй столбец - номер пары
-                                Subject = worksheet.Cells[row, 3].Text, // Третий столбец - предмет
-                                Teacher = worksheet.Cells[row, col].Text, // Преподаватель найден в текущем столбце
-                                Room = worksheet.Cells[row, 5].Text, // Пятый столбец - аудитория
-                                Time = worksheet.Cells[row, 6].Text  // Шестой столбец - время пары
-                            };
-                     //   }
+                    // Добавляем данные в структуру WeekData
+                    if (!result.WeekData.ContainsKey(dayOfWeek))
+                    {
+                        result.WeekData[dayOfWeek] = new Dictionary<string, List<Schedule>>();
                     }
-                    var key = $"{DayOfWeek}_{LessonNumber}";
-                    replacements[key] = schedule;
-                }
-                return schedule;
-            }
-        }
-        public string GetLessonTime(string dayOfWeek, int lessonNumber)
-        {
-            if (dayOfWeek == "Суббота")
-            {
-                return lessonNumber switch
-                {
-                    1 => "08:30-10:00",
-                    2 => "10:10-11:40",
-                    3 => "11:50-13:20",
-                    4 => "13:30-15:00",
-                    5 => "15:10-16:40",
-                    6 => "16:50-18:20",
-                    _ => "Неизвестное время"
-                };
-            }
-            else
-            {
-                return lessonNumber switch
-                {
-                    1 => "08:30-10:00",
-                    2 => "10:10-11:40",
-                    3 => "12:20-13:50",
-                    4 => "14:20-15:50",
-                    5 => "16:00-17:30",
-                    6 => "17:40-19:10",
-                    _ => "Неизвестное время"
-                };
-            }
-        }
 
-        private bool IsDayOfWeek(string value) =>
-            value is "Понедельник" or "Вторник" or "Среда"
-                or "Четверг" or "Пятница" or "Суббота";
+                    if (!result.WeekData[dayOfWeek].ContainsKey(teacher))
+                    {
+                        result.WeekData[dayOfWeek][teacher] = new List<Schedule>();
+                    }
+
+                    result.WeekData[dayOfWeek][teacher].Add(schedule);
+                }
+            }
+
+            return result;
+        }
     }
 }
