@@ -14,10 +14,6 @@
     ContentTemplate="{DataTemplate local:MainPage}"
     Route="MainPage" />
     <ShellContent
-Title="Расписание преподавателей"
-ContentTemplate="{DataTemplate pages:TeacherIsSchedule}"
-Route="TeacherIsSchedule" />
-    <ShellContent
 Title="Расписание перемен"
 ContentTemplate="{DataTemplate pages:BreakPage}"
 Route="BreakPage" />
