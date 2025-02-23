@@ -56,16 +56,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="Helpers\TeacherParser.cs" />
-		<Compile Remove="Models\TeacherShedule.cs" />
 		<Compile Remove="Pages\MainPage.xaml.cs" />
-		<Compile Remove="Pages\TeacherIsSchedule.xaml.cs" />
-		<Compile Remove="Repositories\TeacherRepo.cs" />
-		<Compile Remove="ViewModels\TeacherScheduleViewModel.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <MauiXaml Remove="Pages\TeacherIsSchedule.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -121,6 +112,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Pages\SettingsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\TeacherIsSchedule.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 
