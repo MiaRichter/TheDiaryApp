@@ -14,14 +14,20 @@
             <!-- Регистрация конвертера -->
             <y:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <!-- Цвета для выделения сегодняшнего дня -->
-            <Color x:Key="TodayLightColor">#FFD700</Color>
-            <!-- Золотой цвет для светлой темы -->
-            <Color x:Key="TodayDarkColor">#FFA500</Color>
-            <!-- Оранжевый цвет для темной темы -->
+            <Color x:Key="TodayLightColor">#3d9f8d</Color>
+            <Color x:Key="TodayDarkColor">#46436e</Color>
             <Color x:Key="TodayTextLightColor">#000000</Color>
-            <!-- Черный цвет для светлой темы -->
             <Color x:Key="TodayTextDarkColor">#FFFFFF</Color>
-            <!-- Белый цвет для темной темы -->
+            <Color x:Key="Primary">#0070BA</Color>
+            <Color x:Key="Secondary">#FF424D</Color>
+            <Color x:Key="DarkOnLightBackground">#333333</Color>
+            <Color x:Key="LightOnDarkBackground">#FFFFFF</Color>
+            <Color x:Key="PlaceholderLight">#808080</Color>
+            <Color x:Key="PrimaryDark">#00508A</Color>
+            <Color x:Key="SecondaryDark">#CC2A36</Color>
+            <Color x:Key="PlaceholderDark">#A0A0A0</Color>
+            <Color x:Key="EntryLineLight">#333333</Color>
+            <Color x:Key="EntryLineDark">#FFFFFF</Color>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

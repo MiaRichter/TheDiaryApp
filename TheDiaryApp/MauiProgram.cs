@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Toolkit.Hosting;
 using TheDiaryApp.Pages;
+using TheDiaryApp.Handlers;
+using TheDiaryApp.Controls;
 
 
 namespace TheDiaryApp;
@@ -17,7 +19,8 @@ public static class MauiProgram
 			.ConfigureSyncfusionToolkit()
 			.ConfigureMauiHandlers(handlers =>
 			{
-			})
+                handlers.AddHandler(typeof(CustomEntry), typeof(CustomEntryHandler));
+            })
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -37,6 +40,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddSingleton<SettingsViewModel>();
         builder.Services.AddSingleton<SettingsPage>();
+        //builder.Services.AddSingleton<TeacherRepo>();
+        //builder.Services.AddSingleton<TeacherParser>();
         return builder.Build();
 	}
 }

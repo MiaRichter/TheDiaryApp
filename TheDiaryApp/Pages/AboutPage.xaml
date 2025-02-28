@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TheDiaryApp.Pages.AboutPage"
+             Title="О проекте">
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <!-- Заголовок -->
+        <Label 
+            Text="Журнал" 
+            FontSize="28" 
+            FontAttributes="Bold" 
+            HorizontalOptions="Center">
+            <Label.TextColor>
+                <AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                 Dark="{StaticResource LightOnDarkBackground}" />
+            </Label.TextColor>
+        </Label>
+
+        <!-- Описание проекта -->
+        <Label 
+            Text="Журнал — это приложение для просмотра расписания для студентов и преподавателей. Так же это приложение поможет первокурскам быстрее привыкнуть к студенческой жизни. Мы стремимся сделать его удобным и приятным для каждого пользователя." 
+            FontSize="16" 
+            HorizontalOptions="Center" 
+            HorizontalTextAlignment="Center">
+            <Label.TextColor>
+                <AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                 Dark="{StaticResource LightOnDarkBackground}" />
+            </Label.TextColor>
+        </Label>
+
+        <!-- Поддержка проекта -->
+        <Label 
+            Text="Поддержите проект!" 
+            FontSize="20" 
+            FontAttributes="Bold" 
+            HorizontalOptions="Center">
+            <Label.TextColor>
+                <AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                 Dark="{StaticResource LightOnDarkBackground}" />
+            </Label.TextColor>
+        </Label>
+
+        <Label 
+            Text="Если вам нравится наше приложение, вы можете поддержать его развитие, сделав донат. Спасибо за вашу поддержку!" 
+            FontSize="14" 
+            HorizontalOptions="Center" 
+            HorizontalTextAlignment="Center">
+            <Label.TextColor>
+                <AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                 Dark="{StaticResource LightOnDarkBackground}" />
+            </Label.TextColor>
+        </Label>
+
+        <!-- Кнопки для доната -->
+        <Button 
+            Text="Поддержать через PayPal" 
+            HorizontalOptions="Center">
+            <Button.BackgroundColor>
+                <AppThemeBinding Light="{StaticResource Primary}"
+                                  Dark="{StaticResource PrimaryDark}" />
+            </Button.BackgroundColor>
+            <Button.TextColor>
+                <AppThemeBinding Light="White"
+                                  Dark="White" />
+            </Button.TextColor>
+        </Button>
+
+        <Button 
+            Text="Поддержать через Patreon" 
+            HorizontalOptions="Center">
+            <Button.BackgroundColor>
+                <AppThemeBinding Light="{StaticResource Secondary}"
+                                  Dark="{StaticResource SecondaryDark}" />
+            </Button.BackgroundColor>
+            <Button.TextColor>
+                <AppThemeBinding Light="White"
+                                  Dark="White" />
+            </Button.TextColor>
+        </Button>
+
+        <!-- Дополнительная информация -->
+        <Label 
+            Text="Спасибо, что используете Журнал!" 
+            FontSize="14" 
+            HorizontalOptions="Center" 
+            HorizontalTextAlignment="Center">
+            <Label.TextColor>
+                <AppThemeBinding Light="{StaticResource DarkOnLightBackground}"
+                                 Dark="{StaticResource LightOnDarkBackground}" />
+            </Label.TextColor>
+        </Label>
+
+    </VerticalStackLayout>
+</ContentPage>

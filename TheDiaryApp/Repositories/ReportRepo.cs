@@ -1,4 +1,5 @@
 ﻿using TheDiaryApp.Helpers;
+using Newtonsoft.Json;
 namespace TheDiaryApp.Repositories
 {
     public class ReportRepo
@@ -18,105 +19,123 @@ namespace TheDiaryApp.Repositories
             Dictionary<string, Schedule> replacements;
             StructuredSchedule updatedSchedule;
             // Пути к файлам
-            await InitializeFilesAsync();
             string mainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
-            string copymainFilePath = Path.Combine(FileSystem.AppDataDirectory, "Main.xlsx");
             string replacementsFilePath = Path.Combine(FileSystem.AppDataDirectory, "Replacements.xlsx");
 
+            // Всегда пытаемся использовать локальные файлы
+            if (!File.Exists(mainFilePath))
+                await InitializeFilesAsync();
             // Проверка наличия интернета 2510358 2510356 1936751 2510365
             var currentNetworkAccess = Connectivity.NetworkAccess;
-            if (currentNetworkAccess == NetworkAccess.Internet)
+            try
             {
-                int n = 0;
-                while (true)
+                if (currentNetworkAccess == NetworkAccess.Internet)
                 {
-                    switch (n)
+                    int n = 0;
+                    while (true)
                     {
-                        case 0:
-                            await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/1936751/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
-                                mainFilePath);
-                            n++;
-                            continue;
-                        case 1:
-                            await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
-                                mainFilePath);
-                            n++;
-                            continue;
-                        case 2:
-                            await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510358/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
-                                mainFilePath);
-                            n++;
-                            continue;
-                        case 3:
-                            await DownloadFileAsync(
-                                $"https://newlms.magtu.ru/pluginfile.php/2510365/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
-                                mainFilePath);
-                            n++;
-                            continue;
+                        switch (n)
+                        {
+                            case 0:
+                                await DownloadFileAsync(
+                                    $"https://newlms.magtu.ru/pluginfile.php/1936751/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
+                                    mainFilePath);
+                                n++;
+                                continue;
+                            case 1:
+                                await DownloadFileAsync(
+                                    $"https://newlms.magtu.ru/pluginfile.php/2510356/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
+                                    mainFilePath);
+                                n++;
+                                continue;
+                            case 2:
+                                await DownloadFileAsync(
+                                    $"https://newlms.magtu.ru/pluginfile.php/2510358/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
+                                    mainFilePath);
+                                n++;
+                                continue;
+                            case 3:
+                                await DownloadFileAsync(
+                                    $"https://newlms.magtu.ru/pluginfile.php/2510365/mod_folder/content/0/{groupName}.xlsx?forcedownload=1",
+                                    mainFilePath);
+                                n++;
+                                continue;
+                        }
+                        if (n > 3)
+                            break;
                     }
-                    if (n > 3)
-                        break;
-                }
-                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Sunday.ToString())
-                {
-                    DateTime now = DateTime.Now;
-                    // Форматируем день, чтобы он был в формате "02"
-                    string day = now.Day.ToString("D2");
-                    // Форматируем месяц, чтобы он был в формате "02"
-                    string month = now.Month.ToString("D2");
-                    // Форматируем год, чтобы он был в формате "25"
-                    int year = now.Year % 100;
-                    string endDate = now.AddDays(2).Day.ToString("D2");
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday) //если сегодня воскресенье то покажи расписание с понедельника по среду
+                    if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString() || DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Sunday.ToString())
                     {
-                        day = now.AddDays(1).Day.ToString("D2");
-                        endDate = now.AddDays(3).Day.ToString("D2");
-                    }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // если сегодня вторник то покажи расписание с понедельника по среду
-                    {
-                        day = now.AddDays(-1).Day.ToString("D2");
-                        endDate = now.AddDays(1).Day.ToString("D2");
-                    }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour >= 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
-                    {
-                        day = now.AddDays(1).Day.ToString("D2");
-                        endDate = now.AddDays(3).Day.ToString("D2");
-                    }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Friday) // если сегодня пятница то покажи расписание с четверга по субботу
-                    {
-                        day = now.AddDays(-1).Day.ToString("D2");
-                        endDate = now.AddDays(1).Day.ToString("D2");
-                    }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday) // если сегодня суббота то покажи расписание с четверга по субботу
-                    {
-                        day = now.AddDays(-2).Day.ToString("D2");
-                        endDate = now.AddDays(0).Day.ToString("D2");
-                    }
-                    if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour >= 21) // если сегодня суббота то покажи расписание с понедельника по среду
-                    {
-                        day = now.AddDays(2).Day.ToString("D2");
-                        endDate = now.AddDays(4).Day.ToString("D2");
-                    }
+                        DateTime now = DateTime.Now;
+                        // Форматируем день, чтобы он был в формате "02"
+                        string day = now.Day.ToString("D2");
+                        // Форматируем месяц, чтобы он был в формате "02"
+                        string month = now.Month.ToString("D2");
+                        // Форматируем год, чтобы он был в формате "25"
+                        int year = now.Year % 100;
+                        string endDate = now.AddDays(2).Day.ToString("D2");
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Sunday) //если сегодня воскресенье то покажи расписание с понедельника по среду
+                        {
+                            day = now.AddDays(1).Day.ToString("D2");
+                            endDate = now.AddDays(3).Day.ToString("D2");
+                        }
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Tuesday) // если сегодня вторник то покажи расписание с понедельника по среду
+                        {
+                            day = now.AddDays(-1).Day.ToString("D2");
+                            endDate = now.AddDays(1).Day.ToString("D2");
+                        }
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour >= 21) // если сегодня среда и время 21:00 то покажи расписание с четверга по субботу
+                        {
+                            day = now.AddDays(1).Day.ToString("D2");
+                            endDate = now.AddDays(3).Day.ToString("D2");
+                        }
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Friday) // если сегодня пятница то покажи расписание с четверга по субботу
+                        {
+                            day = now.AddDays(-1).Day.ToString("D2");
+                            endDate = now.AddDays(1).Day.ToString("D2");
+                        }
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday) // если сегодня суббота то покажи расписание с четверга по субботу
+                        {
+                            day = now.AddDays(-2).Day.ToString("D2");
+                            endDate = now.AddDays(0).Day.ToString("D2");
+                        }
+                        if (DateTime.Now.DayOfWeek == DayOfWeek.Saturday && DateTime.Now.Hour >= 21) // если сегодня суббота то покажи расписание с понедельника по среду
+                        {
+                            day = now.AddDays(2).Day.ToString("D2");
+                            endDate = now.AddDays(4).Day.ToString("D2");
+                        }
 
-                    string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{endDate}.{month}.{year}.xlsx?forcedownload=1";
-                    await DownloadFileAsync(query, replacementsFilePath);
+                        string query = $"https://newlms.magtu.ru/pluginfile.php/1936755/mod_folder/content/0/{day}.{month}.{year}-{endDate}.{month}.{year}.xlsx?forcedownload=1";
+                        await DownloadFileAsync(query, replacementsFilePath);
+                    }
                 }
             }
-            else
-            {
-                Console.WriteLine("Внимание нет интернета! Расписание может быть не актуальным!"); //заглушка под вывод сообщения на экране
-            }
+            catch{}
+            
             mainSchedule = _excelParser.ParseExcel(mainFilePath, groupName, subGroup);
             replacements = _replacementParser.ParseReplacements(replacementsFilePath, groupName, subGroup);
             updatedSchedule = ApplyReplacements(mainSchedule, replacements);
-
+            SaveLocalCopy(updatedSchedule);
 
             return updatedSchedule;
         }
+        private void SaveLocalCopy(StructuredSchedule schedule)
+        {
+            string path = Path.Combine(FileSystem.AppDataDirectory, "offline_schedule.json");
+            File.WriteAllText(path, JsonConvert.SerializeObject(schedule));
+        }
+        public StructuredSchedule LoadLocalSchedule()
+        {
+            string path = Path.Combine(FileSystem.AppDataDirectory, "offline_schedule.json");
 
+            if (File.Exists(path))
+            {
+                return JsonConvert.DeserializeObject<StructuredSchedule>(
+                    File.ReadAllText(path));
+            }
+
+            return null;
+        }
         private static async Task DownloadFileAsync(string url, string outputPath)
         {
             try

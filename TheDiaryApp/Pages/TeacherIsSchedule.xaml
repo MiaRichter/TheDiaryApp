@@ -1,0 +1,81 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TheDiaryApp.Pages.TeacherIsSchedule"
+             Title="Расписание преподавателей">
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="10" Padding="10">
+
+                <!-- Отображение расписания -->
+                <CollectionView ItemsSource="{Binding Schedules}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout Spacing="5">
+
+                                <!-- День недели -->
+                                <Label Text="{Binding DayOfWeek}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       Margin="0,10,0,5"
+                                       HorizontalOptions="Center" />
+
+                                <!-- Пары -->
+                                <VerticalStackLayout Spacing="4">
+                                    <Border Padding="10"
+                                            StrokeShape="RoundRectangle 5"
+                                            Margin="10,0,10,5">
+                                        <Grid Margin="5"
+                                              RowSpacing="5"
+                                              ColumnDefinitions="1*, 2*, 1*">
+                                            <!-- Номер пары -->
+                                            <Label Text="{Binding LessenNumber}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="16"
+                                                   VerticalOptions="Center"
+                                                   HorizontalOptions="Center"
+                                                   Grid.Column="0" />
+
+                                            <!-- Предмет и преподаватель -->
+                                            <StackLayout Grid.Column="1"
+                                                         Orientation="Vertical"
+                                                         HorizontalOptions="Center">
+                                                <Label Text="{Binding Subject}"
+                                                       FontSize="14"
+                                                       HorizontalOptions="Center" />
+                                                <Label Text="{Binding Teacher}"
+                                                       FontSize="12"
+                                                       HorizontalOptions="Center" />
+                                            </StackLayout>
+
+                                            <!-- Кабинет и время -->
+                                            <StackLayout Grid.Column="2"
+                                                         Orientation="Vertical"
+                                                         HorizontalOptions="Center">
+                                                <Label Text="{Binding Room}"
+                                                       FontSize="12"
+                                                       HorizontalOptions="Center" />
+                                                <Label Text="{Binding Time}"
+                                                       FontSize="12"
+                                                       HorizontalOptions="Center"
+                                                       Margin="0,5,0,0" />
+                                            </StackLayout>
+                                        </Grid>
+                                    </Border>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Сообщение при отсутствии данных -->
+                <Label Text="Расписание не найдено"
+                       IsVisible="{Binding IsEmpty}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Margin="20" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>
